@@ -1,0 +1,237 @@
+# SECOND LEVEL PART 1: This script reads t-maps from all subjects (output of
+# the first level) and saves in a tmp folder txt files with t-values of all
+# subjects for each voxel of the gray matter mask.
+
+# CONSIDERATIONS:
+
+    # TSV files with preprocessing confounds need to be in a different folder
+    # than firstlevel outputs. If not, pyBIDS will read subjects list from
+    # TSV folder (and there are some subjects for who we have tsv folder but
+    # no firstlevel output)
+
+    # 1) The pyBIDS function to filter files based on 'invalid_filters' does not
+    # work for me. Because of that, I cannot (easily) select the seed-file based
+    # on file name. I'm exclusively relying on the order of the files being the
+    # same for all subjects, i.e. seed=0 is DCPutamen because alphabetically it
+    # is the same file, and it *should* be first for all subjects.
+    # This is not the safest approach but it is fast. (I've checked it works for
+    # a subset of 10 subjects)
+    #
+    # Example of the bids filter function which doesn't work:
+    # bidslayout.get(subject=p,
+                     # session=ses,
+                     # run=r,
+                     # extension=".nii.gz",
+                     # suffix="tstat",
+                     # space="MNI152NLin2009cAsym",
+                     # #regex_search=True,
+                     # # seed="DCPutamen", #does not work
+                     # #invalid_filters="allow"
+                     # )
+
+    # 2) I don't know why there are some subjects who have more than one run for the same
+    # session. We are using all runs available.
+#%%
+
+import numpy as np
+import os, sys
+import bids
+import nibabel as nib
+from nilearn import image as nimg
+import argparse
+import pandas as pd
+import shutil
+
+#%%
+def parse():
+
+        options = argparse.ArgumentParser(description="Run 1st level analysis. Created by ...")
+        options.add_argument('-p', '--participants', nargs='+',dest="participants", action='store', type=str, required=False,
+                            help='id of subject or list of subjects')
+        options.set_defaults(participants=None)
+        options.add_argument('-w', '--workdir',dest="workdir", action='store', type=str, required=False,
+                            help='the work directory for the project')
+        options.set_defaults(workdir=os.environ["ROOTDIR"])
+        #options.add_argument('-b', '--bidsdir',dest="rawdata", action='store', type=str, required=False,
+        #                    help='the work directory for the project')
+        #options.set_defaults(rawdata=os.path.join(os.environ["ROOTDIR"],"BIDS"))
+        options.add_argument('-d', '--derivatives',dest="derivatives", action='store', type=str, required=True,
+                            help='path to fMRIprep directory')
+        options.add_argument('-o', '--outputs',dest="output", action='store', type=str, required=True,
+                            help='path to fMRIprep directory')
+        #print(options.parse_args())
+
+        return options.parse_args()
+
+#%%
+def main ():
+    #os.environ["ROOTDIR"] = '/Users/angeles/'  # seth path
+#    rootdir = os.environ["ROOTDIR"]
+    if hasattr(sys, "ps1"):
+        options = {}
+        workdir = os.environ["ROOTDIR"]
+        #rawdata = os.path.join(workdir,"derivatves","fmriprep")
+        masks = os.path.join(workdir,"code","Striatocortical-connectivity","masks")
+        firstleveldir = os.path.join(workdir,"derivatives","angeles") #  "INPD_subsample") #
+        confounds = os.path.join(workdir,"derivatives","fmriprep")
+        demographic = firstleveldir
+        output  = os.path.join(workdir,"derivatives","angeles","INPD_secondlevel-2")
+        tmp  = os.path.join(output,"tmp")
+
+        participants = []
+
+    else :
+        options = parse()
+        participants = options.participants
+        workdir = options.workdir
+        #rawdata = options.rawdata
+#        derivat = options.derivatives
+        output  = options.outputs
+
+    seednames = ['DCPutamen',
+                 'DorsalCaudate',
+                 'DRPutamen',
+                 'InfVentralCaudate',
+                 'SupVentralCaudate',
+                 'VRPutamen' #_space-MNI152NLin2009cAsym.nii.gz
+                 ]
+
+    print('firstlevel: ', firstleveldir)
+
+    demographics=pd.read_stata(os.path.join(demographic,'Banco_INPD.dta'))
+
+    #################
+    Vgm_nii = nib.load(os.path.join(masks,'GrayMattermask_thalamus_space-MNI152NLin2009cAsym.nii.gz'))
+    #read vol
+    Vgm_vol = Vgm_nii.get_fdata()
+    #save origianl dimensions (voxels_x, voxels_y, voxels_z)
+    dim3d = Vgm_vol.shape
+    #reshape to 2D
+    Vgm_2d = Vgm_vol.reshape(-1, np.prod(dim3d)).T  # -1 means auto-calculate size of dimension
+    #save indexes in which Vgm == 1 (indexes for gray matter location)
+    idx_GM = np.where(Vgm_2d)[0]
+
+    bidslayout = bids.BIDSLayout(firstleveldir, validate = False) #With validate = True it doesn't find any subjects
+    confoundslayout = bids.BIDSLayout(confounds, validate = False) #With validate = True it doesn't find any subjects
+
+
+    if not participants:
+        participants = bidslayout.get_subjects() #toma los del tsv y de algunos no tengo imágenes
+        #participants_sub = ["sub-" + item for item in participants]
+
+    for seed in range(len(seednames)):
+
+        print(f"Seed {seednames[seed]}")
+        tmap_allsubj = [] #initialize array for tmaps
+        covars = []
+        for p in participants:
+            #print(f"Subject: {p}")
+            p = p.replace("sub-", "")
+            for ses in bidslayout.get_sessions(subject=p):
+                #print(f"Session: {ses}")
+
+                for r in bidslayout.get_runs(subject=p, session=ses):
+                    #print(f"Run: {r}")
+                    tmap_sixseeds = bidslayout.get(subject=p,
+                                     session=ses,
+                                     run=r,
+                                     extension=".nii.gz",
+                                     suffix="tstat",
+                                     space="MNI152NLin2009cAsym",
+                                     #regex_search=True,
+                                     #seed="DCPutamen", #does not work
+                                     #invalid_filters="allow"
+                                     )
+                    if len(tmap_sixseeds) < 1:
+                        continue
+                    print(f"Subject: {p}, Session: {ses}, Run: {r}, Seed: {tmap_sixseeds[seed].filename.split('seed-')[1].split('_')[0]}")
+
+                    #Load volume
+                    tmap_bids =tmap_sixseeds[seed]
+                    tmap_nii = nimg.load_img(tmap_bids)
+
+                    # reshape into 2d
+                    tmap_2d = tmap_nii.get_fdata().reshape(-1, np.prod(dim3d)).T
+                    tmap_gm = tmap_2d[idx_GM]
+
+                    tmap_allsubj.append(tmap_gm)
+                    #aux_list.append((p,ses,r))
+
+                    if seed == 0: #only need to do this once
+                        #Load demographics and covariates
+                        dem_i = demographics[demographics.ident==float(p)] #find subject
+                        dem_i = dem_i.reset_index()
+
+                        age_i = dem_i.age[float(ses)-1] #find ses
+                        sex_i = dem_i.gender[float(ses)-1]
+                        site_i = dem_i.state[float(ses)-1]
+
+                        confounds_ents = {}
+                        confounds_ents["subject"] = p
+                        confounds_ents["session"] = ses
+                        confounds_ents["run"] = r
+                        confounds_ents["task"] = 'rest'
+                        #confounds_ents['desc'] = "confounds"
+                        confounds_ents['suffix'] = "timeseries"
+                        confounds_ents['extension'] = ".tsv"
+                        confounds = confoundslayout.get(return_type='file', **confounds_ents, invalid_filters="allow")[0]
+                        noiseconfounds_df = pd.read_csv(confounds, sep='\t')
+
+                        fdmean_i = noiseconfounds_df.framewise_displacement.mean()
+
+                        covars.append((p, ses, age_i, sex_i, fdmean_i, site_i))
+
+        # Stack the arrays in the list horizontally
+        tmap_allsubj = np.hstack(tmap_allsubj).T #dimensions: subj x voxels_GM
+
+        outputseed = os.path.join(tmp,f'{seednames[seed]}')
+        outputtvals = os.path.join(outputseed,'tvals')
+
+        if not os.path.exists(output):
+            os.mkdir(output)
+        if not os.path.exists(tmp):
+            os.mkdir(tmp)
+        if not os.path.exists(outputseed):
+            os.mkdir(outputseed)
+        if not os.path.exists(outputtvals):
+            os.mkdir(outputtvals)
+
+        if seed == 0:
+            df = pd.DataFrame(covars, columns=['ID', 'ses', 'age', 'sex', 'fdmean', 'site' ])
+            df.to_csv(os.path.join(tmp,'df_covars.csv'), index=False)
+
+        for voxel in range(len(idx_GM)):
+            voxel_data = tmap_allsubj[:, voxel]  # Extract voxel ts (t-vals for each subject)
+            file_name = f'voxel_{voxel}_{seednames[seed]}.txt'
+            #You need to put these in different folders.
+            if not os.path.exists(os.path.join(tmp,seednames[seed])):
+                os.mkdir(os.path.join(tmp,seednames[seed]))
+            file_path = os.path.join(tmp,seednames[seed], file_name)
+
+           # Open the file in write mode ('w') to overwrite the existing content or create a new file
+            with open(file_path, 'w') as file:
+               for value in voxel_data:
+                   file.write(f'{value:.6f}\n')    # Save voxel_data as a floating-point number with 6 decimal places
+
+            #np.savetxt(os.path.join(tmp,file_name), voxel_data, fmt='%f')
+            print(f'Saved {file_name}')
+
+        print(f'Compressing folder {outputseed}')
+        # Create the compressed archive
+        shutil.make_archive(outputseed, 'gztar',outputseed)
+        # Remove the original folder
+        print(f'Folder compressed.\nRemoving original folder {outputseed}')
+        shutil.rmtree(outputseed)
+
+#%%
+
+if __name__ == '__main__':
+    main()
+
+
+
+
+
+
+
+
