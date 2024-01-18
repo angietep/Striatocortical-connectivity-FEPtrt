@@ -1,4 +1,4 @@
-Obs y dudas,ID,Excluir,Razon_exclusion,Grupo,Fecha_nacimiento,Sexo,Inicio_CLZ,Ingreso Horwitz,MRI_1,MRI_2,MRI_3,MRI_4,DUP(months),DIT_hosp-MRI1,DIT_preSess1(days),DIT_sess1toLastsess,Duration_of_illness(months),CLZ-MRI1(days)
+Obs y dudas,ID,Excluir,Razon_exclusion,Grupo,Fecha_nacimiento,Sexo,Inicio_CLZ,Dx(o Ingreso Horwitz),MRI_1,MRI_2,MRI_3,MRI_4,DUP(months),DIT_hosp-MRI1,DIT_preSess1(days),DIT_sess1toLastsess,Duration_of_illness(months),CLZ-MRI1(days)
 ,1401,0,,Resistente,18/07/1993,Masculino,21/12/2016,,6/12/2016,17/08/2017,15/07/2021,17/02/2022,"25,0",,50,"1899,0","90,0",15
 ,1402,0,,Resistente,2/04/1995,Masculino,28/12/2016,,15/12/2016,9/05/2017,NA,NA,"11,0",,47,"145,0","17,4",13
 ,1403,1,Afectivo,No_resistente,28/08/1994,Masculino,NA,,10/01/2017,NA,NA,NA,"84,0",,59,"0,0","86,0",NA
@@ -54,7 +54,7 @@ falta DUP,1449,0,,No_resistente,22/04/1998,Masculino,NA,rut,28/06/2018,4/10/2018
 ,1453,1,Afectivo,No_resistente,3/03/1998,Femenino,NA,,12/07/2018,11/10/2018,30/06/2022,NA,"4,0",,21,"1449,0","53,0",NA
 ,1454,0,,No_resistente,13/12/1997,Masculino,NA,,2/08/2018,23/09/2021,NA,NA,"0,3",,14,"1148,0","39,0",NA
 ,1455,0,,No_resistente,9/05/1997,Masculino,NA,,6/09/2018,NA,NA,NA,"0,3",,34,"0,0","1,4",NA
-falta DUP y DIT,1456,0,,No_resistente,11/03/1981,Masculino,NA,ambulatorio,6/09/2018,NA,NA,NA,NA,,NA,"0,0",NA,NA
+"3mg risperidona (1 sem 1mg, 1 sem 2mg, 3ra sem 3mg)",1456,0,,No_resistente,11/03/1981,Masculino,NA,27/06/2018,6/09/2018,NA,NA,NA,NA,"71,0",71,"0,0",NA,NA
 Falta preprocesar sess4,1457,0,,No_resistente,22/06/1999,Masculino,NA,,13/09/2018,21/12/2018,14/07/2022,13/07/2023,"6,0",,15,"1764,0","65,3",NA
 ,1458,0,,No_resistente,16/05/1995,Femenino,NA,,13/09/2018,21/12/2018,28/10/2021,18/08/2022,"14,0",,20,"1435,0","62,5",NA
 ,1459,0,,No_resistente,21/05/2002,Masculino,NA,,25/10/2018,21/03/2019,NA,NA,"9,0",,15,"147,0","14,4",NA
@@ -107,7 +107,7 @@ FN agregada. falta DUP y DIT,1503,0,,Resistente,24/09/1999,Femenino,29/10/2019,2
 ,1506,0,,Resistente,30/01/2002,Femenino,16/01/2020,,28/11/2019,23/02/2023,NA,NA,"1,0",,58,"1183,0","42,4",49
 falta DUP y DIT,1507,0,,No_resistente,02/12/2001,Femenino,NA,18/10/2019,5/12/2019,NA,NA,NA,NA,"48,0",48,"0,0",NA,NA
 ,1508,0,,Resistente,28/07/2001,Masculino,25/11/2022,,5/12/2019,9/03/2023,NA,NA,"6,4",,24,"1190,0","46,9",1.086
-FN estimada (tenemos dato de edad).- Falta DUP y DIT,1509,0,,No_resistente,01/10/1998,Masculino,NA,NC,12/12/2019,23/03/2023,NA,NA,NA,,NA,"1197,0",NA,NA
+ FN agregada.Falta DUP y DIT,1509,0,,No_resistente,23/12/1998,Masculino,NA,09/11/2019,12/12/2019,23/03/2023,NA,NA,NA,"33,0",33,"1197,0",NA,NA
 falta DUP y DIT,1510,0,,Resistente,08/12/1999,Masculino,13/12/2019,8/11/2019,26/12/2019,NA,NA,NA,NA,"48,0",48,"0,0",NA,-13
 falta DUP y DIT,1511,0,,Resistente,06/10/1997,Femenino,17/12/2019,22/11/2019,16/01/2020,NA,NA,NA,NA,"55,0",55,"0,0",NA,-30
 ,1512,0,,No_resistente,6/04/1996,Masculino,NA,,30/01/2020,NA,NA,NA,"11,6",,35,"0,0","12,8",NA
@@ -116,11 +116,11 @@ falta DUP y DIT,1511,0,,Resistente,06/10/1997,Femenino,17/12/2019,22/11/2019,16/
 falta DUP y DIT,1515,0,,No_resistente,27/01/2003,Femenino,NA,14/01/2020,13/02/2020,NA,NA,NA,NA,"30,0",30,"0,0",NA,NA
 ,1516,0,,No_resistente,01/02/2000,Masculino,NA,22/01/2020,20/02/2020,NA,NA,NA,NA,"29,0",29,"0,0",NA,NA
 ,1517,1,Afectivo,No_resistente,NA,NA,NA,,12/03/2020,NA,NA,NA,,,,"0,0","0,0",NA
-FN y sexo added. Falta dit y dup,1600,0,,Resistente,11/11/1998,Masculino,NA,NC,15/07/2021,31/03/2022,NA,NA,,,,"259,0","8,6",NA
-FN y sexo added.Falta dit y dup,1601,0,,NA,18/01/2000,Masculino,NA,amb?,14/10/2021,6/10/2022,NA,NA,,,,"357,0","11,9",NA
-,1602,1,NoesPEP,No_resistente,20/02/1992,Masculino,NA,NC,21/10/2021,4/08/2022,NA,NA,,,,"287,0","9,6",NA
+FN y sexo added. 3mg risperidona en MRI1,1600,0,,Resistente,11/11/1998,Masculino,NA,09/06/2021,15/07/2021,31/03/2022,NA,NA,,"36,0",36,"259,0","45,8",NA
+FN y sexo added.Falta dit y dup. 1.5mg risperidona,1601,0,,No_resistente,18/01/2000,Masculino,NA,05/10/2021,14/10/2021,6/10/2022,NA,NA,,"9,0",9,"357,0","21,2",NA
+,1602,1,NoesPEP,No_resistente,20/02/1992,Masculino,NA,01/06/2016,21/10/2021,4/08/2022,NA,NA,,"1968,0",,"287,0","9,6",NA
 ,1603,1,NoMRI,NA,NA,Femenino,NA,,NA,NA,NA,NA,,,,"0,0","0,0",NA
-FN y sexo added,1604,0,,NA,08/06/1999,Femenino,NA,amb?,24/02/2022,NA,NA,NA,,,,"0,0","0,0",NA
-,1605,0,,NA,11/06/2001,Masculino,NA,20/05/2022,20/10/2022,11/05/2023,NA,NA,,"153,0",153,"203,0","11,9",NA
+FN y sexo added,1604,0,,NA,08/06/1999,Femenino,NA,ambulatorio,24/02/2022,NA,NA,NA,,,,"0,0","0,0",NA
+Preguntar a NC,1605,0,,NA,11/06/2001,Masculino,NA,20/05/2022,20/10/2022,11/05/2023,NA,NA,,"153,0",153,"203,0","11,9",NA
 ,1606,1,NoMRI,NA,NA,Femenino,NA,,NA,NA,NA,NA,,,,"0,0","0,0",NA
-,1607,0,,NA,NA,Masculino,NA,amb?,26/01/2023,NA,NA,NA,,,,"0,0","0,0",NA
+,1607,0,,NA,NA,Masculino,NA,ambulatorio,26/01/2023,NA,NA,NA,,,,"0,0","0,0",NA
