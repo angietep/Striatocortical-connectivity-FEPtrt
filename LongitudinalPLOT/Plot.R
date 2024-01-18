@@ -2,7 +2,7 @@
 # Longitudinal plots to characterize our data
 
 # Set environment ####
-rm(list = ls()) # ctrl + L to clear console
+rm(list = ls())# ctrl + L to clear console
 setwd("~/Documents/GitHub/Striatocortical-connectivity-FEPtrt/LongitudinalPLOT/")
 library(tidyverse)
 
@@ -17,7 +17,7 @@ df <- sample[, c("ID", "Grupo","Fecha_nacimiento","Sexo",
                  "Excluir")]
 
 #keep ROWS up to subject 1517
-df <- df[1:117,] 
+#df <- df[1:117,] 
 rm(sample) #remove original full df
 
 ## Change data classes ####
@@ -60,7 +60,7 @@ df <- df[!df$Excluir==1,]
 
 df <- df[!is.na(df$Fecha_nacimiento), ]
 df <- df[!is.na(df$Sexo), ]
-df <- df[!is.na(df$DUP.months.), ]
+df <- df[!is.na(df$Grupo), ]
 df <- df[!is.na(df$DIT_preSess1.days.), ]
 
 
@@ -115,6 +115,10 @@ ggplot(df %>%
   geom_text(aes(x=12*7, y=-20, label="7y"), size=3)
 
 # PLOT 1b: DURATION OF ILLNESS####
+
+## Exclude if not DUP ####
+df <- df[!is.na(df$DUP.months.), ]
+
 ## Define time-points for plot ####
 
 # t0 = 0 : inicio de enfermedad
