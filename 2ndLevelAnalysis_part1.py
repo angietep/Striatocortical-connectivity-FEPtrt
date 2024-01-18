@@ -65,8 +65,8 @@ def parse():
 
 #%%
 def main ():
-    #os.environ["ROOTDIR"] = '/Users/angeles/'  # seth path
-#    rootdir = os.environ["ROOTDIR"]
+    os.environ["ROOTDIR"] = '/Users/angeles/'  # seth path
+    rootdir = os.environ["ROOTDIR"]
     if hasattr(sys, "ps1"):
         options = {}
         workdir = os.environ["ROOTDIR"]
@@ -77,7 +77,6 @@ def main ():
         demographic = firstleveldir
         output  = os.path.join(workdir,"derivatives","angeles","INPD_secondlevel-2")
         tmp  = os.path.join(output,"tmp")
-
         participants = []
 
     else :
@@ -85,7 +84,7 @@ def main ():
         participants = options.participants
         workdir = options.workdir
         #rawdata = options.rawdata
-#        derivat = options.derivatives
+        #derivat = options.derivatives
         output  = options.outputs
 
     seednames = ['DCPutamen',
@@ -113,7 +112,6 @@ def main ():
 
     bidslayout = bids.BIDSLayout(firstleveldir, validate = False) #With validate = True it doesn't find any subjects
     confoundslayout = bids.BIDSLayout(confounds, validate = False) #With validate = True it doesn't find any subjects
-
 
     if not participants:
         participants = bidslayout.get_subjects() #toma los del tsv y de algunos no tengo imágenes
@@ -227,11 +225,3 @@ def main ():
 
 if __name__ == '__main__':
     main()
-
-
-
-
-
-
-
-
