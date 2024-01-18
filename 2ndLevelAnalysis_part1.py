@@ -65,17 +65,21 @@ def parse():
 
 #%%
 def main ():
+    #os.environ["ROOTDIR"] = '/Users/brainsur/'  # seth path
     os.environ["ROOTDIR"] = '/Users/angeles/'  # seth path
     rootdir = os.environ["ROOTDIR"]
     if hasattr(sys, "ps1"):
         options = {}
-        workdir = os.environ["ROOTDIR"]
-        #rawdata = os.path.join(workdir,"derivatves","fmriprep")
-        masks = os.path.join(workdir,"code","Striatocortical-connectivity","masks")
-        firstleveldir = os.path.join(workdir,"derivatives","angeles") #  "INPD_subsample") #
-        confounds = os.path.join(workdir,"derivatives","fmriprep")
-        demographic = firstleveldir
-        output  = os.path.join(workdir,"derivatives","angeles","INPD_secondlevel-2")
+        #workdir = os.path.join(rootdir,"Desktop/striatconn")
+        workdir = os.path.join("/Volumes/TOSHIBA")
+        rawdata = os.path.join(workdir,"Preprocessed","FEPtrt_bids") # sub-1401_ses-01_task-rest_fdpower.txt
+        masks = os.path.join(workdir,"masks")
+        firstleveldir = os.path.join(workdir,"firstlevel") #  
+        
+        demographic = workdir
+        #confounds = os.path.join(workdir,"derivatives","fmriprep")
+        
+        output  = os.path.join(workdir,"secondlevel")
         tmp  = os.path.join(output,"tmp")
         participants = []
 
@@ -85,8 +89,10 @@ def main ():
         workdir = options.workdir
         #rawdata = options.rawdata
         #derivat = options.derivatives
-        output  = options.outputs
+        script_path = os.path.dirname(__file__)
+        masks = os.path.join(script_path,"masks")
 
+   
     seednames = ['DCPutamen',
                  'DorsalCaudate',
                  'DRPutamen',
@@ -96,11 +102,15 @@ def main ():
                  ]
 
     print('firstlevel: ', firstleveldir)
+      
 
-    demographics=pd.read_stata(os.path.join(demographic,'Banco_INPD.dta'))
+    demographics=pd.read_csv(os.path.join(demographic,'subjects_finallist_DIT.csv'))
+    demographics['MRI_'] = pd.to_datetime(demographics['MRI_'])
+    demographics['Fecha_nacimiento'] = pd.to_datetime(demographics['Fecha_nacimiento'])
+                   
 
     #################
-    Vgm_nii = nib.load(os.path.join(masks,'GrayMattermask_thalamus_space-MNI152NLin2009cAsym.nii.gz'))
+    Vgm_nii = nib.load(os.path.join(masks,'GrayMattermask_thalamus_space-MNI152_dim-9110991.nii.gz'))
     #read vol
     Vgm_vol = Vgm_nii.get_fdata()
     #save origianl dimensions (voxels_x, voxels_y, voxels_z)
@@ -111,7 +121,7 @@ def main ():
     idx_GM = np.where(Vgm_2d)[0]
 
     bidslayout = bids.BIDSLayout(firstleveldir, validate = False) #With validate = True it doesn't find any subjects
-    confoundslayout = bids.BIDSLayout(confounds, validate = False) #With validate = True it doesn't find any subjects
+    confoundslayout = bids.BIDSLayout(rawdata, validate = False) #With validate = True it doesn't find any subjects
 
     if not participants:
         participants = bidslayout.get_subjects() #toma los del tsv y de algunos no tengo imágenes
@@ -127,57 +137,52 @@ def main ():
             p = p.replace("sub-", "")
             for ses in bidslayout.get_sessions(subject=p):
                 #print(f"Session: {ses}")
+                tmap_sixseeds = bidslayout.get(subject=p,
+                                 session=ses,
+                                 extension=".nii.gz",
+                                 suffix="tstat",
+                                 space="MNI152",
+                                 #regex_search=True,
+                                 #seed="DCPutamen", #does not work
+                                 #invalid_filters="allow"
+                                 )
+                if len(tmap_sixseeds) < 1:
+                    continue
+                print(f"Subject: {p}, Session: {ses}, Seed: {tmap_sixseeds[seed].filename.split('seed-')[1].split('_')[0]}")
 
-                for r in bidslayout.get_runs(subject=p, session=ses):
-                    #print(f"Run: {r}")
-                    tmap_sixseeds = bidslayout.get(subject=p,
-                                     session=ses,
-                                     run=r,
-                                     extension=".nii.gz",
-                                     suffix="tstat",
-                                     space="MNI152NLin2009cAsym",
-                                     #regex_search=True,
-                                     #seed="DCPutamen", #does not work
-                                     #invalid_filters="allow"
-                                     )
-                    if len(tmap_sixseeds) < 1:
-                        continue
-                    print(f"Subject: {p}, Session: {ses}, Run: {r}, Seed: {tmap_sixseeds[seed].filename.split('seed-')[1].split('_')[0]}")
+                #Load volume
+                tmap_bids =tmap_sixseeds[seed]
+                tmap_nii = nimg.load_img(tmap_bids)
 
-                    #Load volume
-                    tmap_bids =tmap_sixseeds[seed]
-                    tmap_nii = nimg.load_img(tmap_bids)
+                # reshape into 2d
+                tmap_2d = tmap_nii.get_fdata().reshape(-1, np.prod(dim3d)).T
+                tmap_gm = tmap_2d[idx_GM]
 
-                    # reshape into 2d
-                    tmap_2d = tmap_nii.get_fdata().reshape(-1, np.prod(dim3d)).T
-                    tmap_gm = tmap_2d[idx_GM]
+                tmap_allsubj.append(tmap_gm)
+                #aux_list.append((p,ses,r))
 
-                    tmap_allsubj.append(tmap_gm)
-                    #aux_list.append((p,ses,r))
+                if seed == 0: #only need to do this once
+                    #Load demographics and covariates
+                    dem_i = demographics[demographics.ID==float(p)] #find subject
+                    dem_i = dem_i.reset_index()
+                    
+                    sex_i = dem_i.Sexo[float(ses)-1]
+                    age_i = (dem_i.MRI_[float(ses)-1]-dem_i.Fecha_nacimiento[float(ses)-1]).days // 365 #find ses
+                    
+                    confounds_ents = {}
+                    confounds_ents["subject"] = p
+                    confounds_ents["session"] = ses
+                    confounds_ents["task"] = 'rest'
+                    #confounds_ents['desc'] = "confounds"
+                    confounds_ents['suffix'] = "fdpower"
+                    confounds_ents['extension'] = ".txt"
+                    confounds = confoundslayout.get(return_type='file', **confounds_ents, invalid_filters="allow")[0]
+                   
+                    # sub-1401_ses-01_task-rest_fdpower.txt
+                    noiseconfounds_df = pd.read_csv(confounds, sep='\t', header=None, names=["framewise_displacement"])
+                    fdmean_i = noiseconfounds_df.framewise_displacement.mean()
 
-                    if seed == 0: #only need to do this once
-                        #Load demographics and covariates
-                        dem_i = demographics[demographics.ident==float(p)] #find subject
-                        dem_i = dem_i.reset_index()
-
-                        age_i = dem_i.age[float(ses)-1] #find ses
-                        sex_i = dem_i.gender[float(ses)-1]
-                        site_i = dem_i.state[float(ses)-1]
-
-                        confounds_ents = {}
-                        confounds_ents["subject"] = p
-                        confounds_ents["session"] = ses
-                        confounds_ents["run"] = r
-                        confounds_ents["task"] = 'rest'
-                        #confounds_ents['desc'] = "confounds"
-                        confounds_ents['suffix'] = "timeseries"
-                        confounds_ents['extension'] = ".tsv"
-                        confounds = confoundslayout.get(return_type='file', **confounds_ents, invalid_filters="allow")[0]
-                        noiseconfounds_df = pd.read_csv(confounds, sep='\t')
-
-                        fdmean_i = noiseconfounds_df.framewise_displacement.mean()
-
-                        covars.append((p, ses, age_i, sex_i, fdmean_i, site_i))
+                    covars.append((p, ses, age_i, sex_i, fdmean_i))
 
         # Stack the arrays in the list horizontally
         tmap_allsubj = np.hstack(tmap_allsubj).T #dimensions: subj x voxels_GM
@@ -195,7 +200,7 @@ def main ():
             os.mkdir(outputtvals)
 
         if seed == 0:
-            df = pd.DataFrame(covars, columns=['ID', 'ses', 'age', 'sex', 'fdmean', 'site' ])
+            df = pd.DataFrame(covars, columns=['ID', 'ses', 'age', 'sex', 'fdmean' ])
             df.to_csv(os.path.join(tmp,'df_covars.csv'), index=False)
 
         for voxel in range(len(idx_GM)):
