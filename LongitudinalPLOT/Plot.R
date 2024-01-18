@@ -2,7 +2,7 @@
 # Longitudinal plots to characterize our data
 
 # Set environment ####
-rm(list = ls())# ctrl + L to clear console
+rm(list= ls())# ctrl + L to clear console
 setwd("~/Documents/GitHub/Striatocortical-connectivity-FEPtrt/LongitudinalPLOT/")
 library(tidyverse)
 
@@ -114,6 +114,17 @@ ggplot(df %>%
   geom_text(aes(x=12*6, y=-20, label="6y"), size=3) +
   geom_text(aes(x=12*7, y=-20, label="7y"), size=3)
 
+
+# Export the data frame to a CSV file
+long_data <- pivot_longer(df, 
+                          cols = starts_with("MRI") | starts_with("t"),
+                          names_to = c(".value", "session"),
+                          names_pattern = "(\\D+)(\\d+)")
+
+write.csv(long_data, file = "subjects_finallist_DIT.csv", row.names = FALSE)
+
+
+
 # PLOT 1b: DURATION OF ILLNESS####
 
 ## Exclude if not DUP ####
@@ -161,8 +172,13 @@ ggplot(df %>%
   geom_text(aes(x=12*6, y=-20, label="6y"), size=3) +
   geom_text(aes(x=12*7, y=-20, label="7y"), size=3)
 
-
 # Export the data frame to a CSV file
-write.csv(df, file = "subjects_finallist.csv", row.names = FALSE)
+
+long_data <- pivot_longer(df, 
+                          cols = starts_with("MRI") | starts_with("t"),
+                          names_to = c(".value", "session"),
+                          names_pattern = "(\\D+)(\\d+)")
+
+write.csv(df, file = "subjects_finallist_DUP.csv", row.names = FALSE)
 
 
