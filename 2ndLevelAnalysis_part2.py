@@ -57,7 +57,7 @@
 import numpy as np
 import os, sys
 #import bids
-#import nibabel as nib
+import nibabel as nib
 #from scipy.stats import pearsonr
 from scipy.stats import chi2
 import statsmodels.api as sm
@@ -106,25 +106,33 @@ def parse():
 
 #%%
 def main ():
-    #os.environ["ROOTDIR"] = '/Users/angeles/'  # seth path
-    #rootdir = os.environ["ROOTDIR"]
+    os.environ["ROOTDIR"] = '/Users/brainsur/'  # seth path
+    # os.environ["ROOTDIR"] = '/Users/angeles/'  # seth path
+    rootdir = os.environ["ROOTDIR"]
     if hasattr(sys, "ps1"):
         options = {}
-        #workdir = os.environ["ROOTDIR"]
-        voxel = "./voxel_128025_DCPutamen.txt"
-        tarpath = "/data/NIMH_scratch/zugmana2/angeles/INPD_secondlevel-2/tmp/DCPutamen.tar.gz"
-        covariates = "/data/zugmana2/INPD/derivatives/angeles/INPD_secondlevel-2/tmp/df_covars.csv"
-        output = "/data/zugmana2/INPD/derivatives/angeles/INPD_secondlevel-2/test1"
-        #rawdata = os.path.join(workdir,"fmriprep_examples")
-        #masks = os.path.join(rawdata,"masks")
-        #firstleveldir = os.path.join(workdir,"INPD_striatal-connectivity") #  "INPD_subsample") #
+        workdir = os.path.join(rootdir, "Desktop/striatconn")
+
+        # voxel = "./voxel_128025_DCPutamen.txt"
+        # tarpath = "/data/NIMH_scratch/zugmana2/angeles/INPD_secondlevel-2/tmp/DCPutamen.tar.gz"
+        tarpath = os.path.join(workdir, "secondlevel", "tmp")
+        # covariates = "/data/zugmana2/INPD/derivatives/angeles/INPD_secondlevel-2/tmp/df_covars.csv"
+        covariates = os.path.join(
+            workdir, "secondlevel", "tmp", "df_covars.csv")
+
+        # output = "/data/zugmana2/INPD/derivatives/angeles/INPD_secondlevel-2/test1"
+        output = os.path.join(workdir, "secondlevel")
+        # rawdata = os.path.join(workdir,"fmriprep_examples")
+        # masks = os.path.join(rawdata,"masks")
+        masks = os.path.join(workdir, "masks")
+        # firstleveldir = os.path.join(workdir,"INPD_striatal-connectivity") #  "INPD_subsample") #
 #        confounds = os.path.join(workdir,"INPD_tsvs")
 #        demographic = firstleveldir
-        #output  = os.path.join(firstleveldir,"../INPD_secondlevel")
-        #tmp  = os.path.join(output,"tmp")
+        # output  = os.path.join(firstleveldir,"../INPD_secondlevel")
+        # tmp  = os.path.join(output,"tmp")
 #        participants = []
 
-    else :
+    else:
         options = parse()
         voxel = options.voxel
         covariates = options.covariates
@@ -133,121 +141,124 @@ def main ():
         # rawdata = options.rawdata
  #       derivat = options.derivatives
         tarpath = options.tarpath
-        output  = options.output
+        output = options.output
 
+    seednames = ['DCPutamen',
+                 'DorsalCaudate',
+                 'DRPutamen',
+                 'InfVentralCaudate',
+                 'SupVentralCaudate',
+                 'VRPutamen'  # _space-MNI152NLin2009cAsym.nii.gz
+                 ]
 
-    # seednames = ['DCPutamen',
-    #              'DorsalCaudate',
-    #              'DRPutamen',
-    #              'InfVentralCaudate',
-    #              'SupVentralCaudate',
-    #              'VRPutamen' #_space-MNI152NLin2009cAsym.nii.gz
-    #              ]
-
-    #print('firstlevel: ', firstleveldir)
+    # print('firstlevel: ', firstleveldir)
 
     #################
-    #Vgm_nii = nib.load(os.path.join(masks,'GrayMattermask_thalamus_space-MNI152NLin2009cAsym.nii.gz'))
-    #read vol
-    #Vgm_vol = Vgm_nii.get_fdata()
-    #save origianl dimensions (voxels_x, voxels_y, voxels_z)
-    #dim3d = Vgm_vol.shape
-    #reshape to 2D
-    #Vgm_2d = Vgm_vol.reshape(-1, np.prod(dim3d)).T  # -1 means auto-calculate size of dimension
-    #save indexes in which Vgm == 1 (indexes for gray matter location)
-    #idx_GM = np.where(Vgm_2d)[0]
+    Vgm_nii = nib.load(os.path.join(
+        masks, 'GrayMattermask_thalamus_space-MNI152_dim-9110991.nii.gz'))
+    # read vol
+    Vgm_vol = Vgm_nii.get_fdata()
+    # save origianl dimensions (voxels_x, voxels_y, voxels_z)
+    dim3d = Vgm_vol.shape
+    # reshape to 2D
+    # -1 means auto-calculate size of dimension
+    Vgm_2d = Vgm_vol.reshape(-1, np.prod(dim3d)).T
+    # save indexes in which Vgm == 1 (indexes for gray matter location)
+    idx_GM = np.where(Vgm_2d)[0]
 
-    #df = pd.read_csv(os.path.join(tmp,'df_covars.csv'), header=0)
-    df = pd.read_csv(covariates,header=0)
-    #p_values_list=[]
-    if not os.path.exists(os.path.join(output,'pvals')):
-        os.makedirs(os.path.join(output,'pvals'))
-    os.chdir(os.path.dirname(tarpath))
-    subprocess.run(["tar","-zxvf",tarpath,voxel])
-    #this should be a function... Each voxel should run in this function independently. I'll edit a bit.
-    #for seed in range(len(seednames)):
-    #    for voxel in range(len(idx_GM)):
-    #print(f"Voxel {voxel} out of {len(idx_GM)} for seed {seed}: {seednames[seed]}")
-    try:
-        file_name = f'voxel : {voxel}'
-        voxel_t = pd.read_csv(voxel, header=None, names=['voxel_t'])
+    # df = pd.read_csv(os.path.join(tmp,'df_covars.csv'), header=0)
+    df = pd.read_csv(covariates, header=0)
+    # p_values_list=[]
+    
+   # os.chdir(tarpath)
+    # subprocess.run(["tar","-zxvf",tarpath,voxel])
+    # this should be a function... Each voxel should run in this function independently. I'll edit a bit.
+    for seed in range(len(seednames)):
+        if not os.path.exists(os.path.join(output,f"{seednames[seed]}" ,'pvals')):
+            os.makedirs(os.path.join(output, f"{seednames[seed]}",'pvals'))       
+        for voxel in range(len(idx_GM)):
+            if seed==0:
+                voxel = voxel + 6186
+                
+            print(f"Voxel {voxel} out of {len(idx_GM)} for seed {seed}: {seednames[seed]}")
+            # subprocess.run(["tar","-zxvf",tarpath,seednames[seed]])
+            try:
+                file_name = f'voxel_{voxel}_{seednames[seed]}.txt'
+                file_path = os.path.join(
+                    tarpath, f"{seednames[seed]}", file_name)
 
-        df['voxel_t'] = voxel_t
+                voxel_t = pd.read_csv(
+                    file_path, header=None, names=['voxel_t'])
+                
+                if voxel_t['voxel_t'].isnull().any() | voxel_t['voxel_t'].isnull().all():
+                    print(f"Skipping voxel {voxel} due to NaN values in 'voxel_t'")
+                    continue
 
-        model_1 = sm.MixedLM.from_formula(
-            #"voxel_t ~ 1 + age + np.square(age) + sex + fdmean",
-            "voxel_t ~ 1 + age + sex + fdmean",
-            data=df,
-            groups=df["site"],
-            re_formula="1",
-            vc_formula={"ID": "0 + C(ID)"},
-            missing='drop'  # Omit rows with missing values
-        )
+                df['voxel_t'] = voxel_t
 
-        model_0 = sm.MixedLM.from_formula(
-            "voxel_t ~ 1 + sex + fdmean ",
-            data=df,
-            groups=df["site"],
-            re_formula="1",
-            vc_formula={"ID": "0 + C(ID)"},
-            missing='drop'  # Omit rows with missing values
-        )
+                model_formula = 'voxel_t ~ age + sex + fdmean + t_DIT+ group + t_DIT:group + (1|ID)'
+                mixed_model = smf.mixedlm(model_formula, df, groups=df['ID'])
+                result = mixed_model.fit()
+        
 
-        # Fit models
-        result_1 = model_1.fit()
-        result_0 = model_0.fit()
+                # View the model summary
+                # print(result.summary())
+                pval_interaction = result.pvalues['t_DIT:group[T.nonTRT]']
+                beta_interaction = result.params['t_DIT:group[T.nonTRT]']
+                pval_DIT = result.pvalues['t_DIT']
+                beta_DIT = result.params['t_DIT']
+                pval_Group = result.pvalues['group[T.nonTRT]']
+                beta_Group = result.params['group[T.nonTRT]']
 
-        # View the model summary
-        #print(result.summary())
-        pval_age = result_1.pvalues['age']
-        #pval_age2 = result_1.pvalues['np.square(age)']
-        pval_age2 = np.nan
-        beta_age = result_1.params['age']
-        #beta_age2 = result_1.params['np.square(age)']
-        beta_age2 = np.nan
-        #COMPARE THE TWO MODELS
-        # Calculate the likelihood ratio test (LRT) statistic
-        lr_statistic = 2 * (result_1.llf - result_0.llf)
-        # Calculate the degrees of freedom
-        dof = result_1.df_modelwc - result_0.df_modelwc
-        # Calculate the p-value using the chi-squared distribution
-        pval_modelvsnull = 1 - chi2.cdf(lr_statistic, dof)
+                df = df.drop(columns=['voxel_t'])
 
-        df = df.drop(columns=['voxel_t'])
+                filevals = [beta_interaction, pval_interaction, beta_DIT, pval_DIT, beta_Group, pval_Group]
 
-        filevals = [pval_modelvsnull, beta_age, pval_age, beta_age2, pval_age2]
+                
+                file_path = os.path.join(output, f"{seednames[seed]}",'pvals', file_name)
 
+                with open(os.path.join(file_path), 'w') as file:
+                    # Write column headers
+                    file.write(
+                        "beta_interaction\tpval_interaction\tbeta_DIT\tpval_DIT\tbeta_Group\tpval_Group\n")
+                    # Write p-values in different columns
+                    for val in filevals:
+                        if val == filevals[-1]:
+                            file.write(f"{val}")
+                        else:
+                            file.write(f"{val}\t")  # Write p-values
+                print(f'Saved {file_path}')
 
-        file_name = os.path.basename(voxel)
-        file_path = os.path.join(output,'pvals',file_name)
+            # Handle the LinAlgError (singular matrix)
+            except IndexError as e:
+                # Handle the LinAlgError exception
+                print(f"LinAlgError occurred: {e} at voxel {voxel}. P-val = NaN")
+                pval_interaction =np.nan
+                beta_interaction =np.nan
+                pval_DIT = np.nan
+                beta_DIT = np.nan
+                pval_Group = np.nan
+                beta_Group = np.nan
+                # p_values_list.append(p_value)
 
+                df = df.drop(columns=['voxel_t'])
 
-        with open(os.path.join(file_path), 'w') as file:
-            # Write column headers
-            file.write("pval_modelvsnull\tbeta_age\tpval_age\tbeta_age2\tpval_age2\n")
-            # Write p-values in different columns
-            for val in filevals:
-                if val == filevals[-1]:
-                    file.write(f"{val}")
-                else:
-                    file.write(f"{val}\t")  # Write p-values
-        print(f'Saved {file_path}')
+                filevals = [beta_interaction, pval_interaction,beta_DIT, pval_DIT, beta_Group, pval_Group]
 
-    except LinAlgError as e:  # Handle the LinAlgError (singular matrix)
-        # Handle the LinAlgError exception
-        print(f"LinAlgError occurred: {e} at voxel {voxel}. P-val = NaN")
-        p_value = np.nan
-        #p_values_list.append(p_value)
+                
+                file_path = os.path.join(output, f"{seednames[seed]}",'pvals', file_name)
 
-        df = df.drop(columns=['voxel_t'])
-
-        file_name = os.path.basename(voxel)
-        file_path = os.path.join(output,'pvals',file_name)
-
-        with open(file_path, 'w') as file:
-           file.write(str(p_value))
-        print(f'Saved {file_name}')
-        subprocess.run(["rm","-v",voxel])
+                with open(os.path.join(file_path), 'w') as file:
+                  # Write column headers
+                  file.write(
+                      "beta_interaction\tpval_interaction\tbeta_DIT\tpval_DIT\tbeta_Group\tpval_Group\n")
+                  # Write p-values in different columns
+                  for val in filevals:
+                      if val == filevals[-1]:
+                          file.write(f"{val}")
+                      else:
+                          file.write(f"{val}\t")  # Write p-values
+                print(f'Saved {file_path}')
 
 #%%
 
