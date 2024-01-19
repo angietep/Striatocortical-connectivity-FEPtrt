@@ -191,7 +191,6 @@ def main ():
         tmap_allsubj = np.hstack(tmap_allsubj).T #dimensions: subj x voxels_GM
 
         outputseed = os.path.join(tmp,f'{seednames[seed]}')
-        outputtvals = os.path.join(outputseed,'tvals')
 
         if not os.path.exists(output):
             os.mkdir(output)
@@ -199,8 +198,6 @@ def main ():
             os.mkdir(tmp)
         if not os.path.exists(outputseed):
             os.mkdir(outputseed)
-        if not os.path.exists(outputtvals):
-            os.mkdir(outputtvals)
 
         if seed == 0:
             df = pd.DataFrame(covars, columns=['ID', 'group','ses','t_DIT', 'age', 'sex', 'fdmean' ])
