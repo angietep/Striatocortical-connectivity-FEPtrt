@@ -28,12 +28,17 @@ def parse():
 
 #%%
 def main ():
+    os.environ["ROOTDIR"] = '/Users/brainsur/'  # seth path
+    #os.environ["ROOTDIR"] = '/Users/angeles/'  # seth path
+    rootdir = os.environ["ROOTDIR"]
     if hasattr(sys, "ps1"):
         options = {}
-        tmp = "/data/zugmana2/INPD/derivatives/angeles/INPD_secondlevel-2/tmp/results/" #os.environ["ROOTDIR"]
-        masks = os.path.join("/data/zugmana2/INPD","code","Striatocortical-connectivity","masks")
-        output = "/data/zugmana2/INPD/derivatives/angeles/INPD_secondlevel-2/results"
-
+        workdir = os.path.join(rootdir,"Desktop/striatconn")
+        masks = os.path.join(workdir,"masks")
+        tmp = os.path.join(workdir, "secondlevel")
+        output = os.path.join(tmp, "Results_nii")
+        
+        
     else :
 
         options = parse()
@@ -55,7 +60,7 @@ def main ():
 
 
     #################
-    Vgm_nii = nib.load(os.path.join(masks,'GrayMattermask_thalamus_space-MNI152NLin2009cAsym.nii.gz'))
+    Vgm_nii = nib.load(os.path.join(masks,'GrayMattermask_thalamus_space-MNI152_dim-9110991.nii.gz'))
     #read vol
     Vgm_vol = Vgm_nii.get_fdata()
     #save origianl dimensions (voxels_x, voxels_y, voxels_z)
@@ -76,9 +81,9 @@ def main ():
         #with tarfile.open(compressed_folder, 'r:gz') as archive:
         #    archive.extractall(outputseed)
         #os.remove(compressed_folder)
-        pval_model_list=[]
-        pval_age_list=[]
-        pval_age2_list=[]
+        pval_interaction_list=[]
+        pval_DIT_list=[]
+        pval_Group_list=[]
         pval_filepath = os.path.join(tmp, f'{seednames[seed]}','pvals')
 
         for voxel in range(len(idx_GM)):
@@ -87,56 +92,53 @@ def main ():
             filename = f'voxel_{voxel}_{seednames[seed]}.txt'
             #If file does not exist. (i.e.: model did not converge) - replace with nans
             if not os.path.isfile(os.path.join(pval_filepath, filename)):
-                pval_modelvsnull = np.nan
-                pval_age = np.nan
-                pval_age2 = np.nan
-                pval_model_list.append(pval_modelvsnull)
-                pval_age_list.append(pval_age)
-                pval_age2_list.append(pval_age2)
+                pval_interaction = np.nan
+                pval_DIT = np.nan
+                pval_Group = np.nan
+                
             # Read the text file into a DataFrame
             else:
                 df = pd.read_csv(os.path.join(pval_filepath, filename), sep='\t')
 
                 # Access the p-values from the DataFrame
-                pval_modelvsnull = df["pval_modelvsnull"].values[0]
-                pval_age = df["pval_age"].values[0]
-                pval_age2 = df["pval_age2"].values[0]
+                pval_interaction = df["pval_interaction"].values[0]
+                pval_DIT = df["pval_DIT"].values[0]
+                pval_Group = df["pval_Group"].values[0]
 
-
-                pval_model_list.append(pval_modelvsnull)
-                pval_age_list.append(pval_age)
-                pval_age2_list.append(pval_age2)
+            pval_interaction_list.append(pval_interaction)
+            pval_DIT_list.append(pval_DIT)
+            pval_Group_list.append(pval_Group)
 
         # Convert p-values to a NumPy array and invert (1-pval)
-        pvalues_model = np.array(pval_model_list)
-        inv_pvals_model = 1 - pvalues_model
+        pvalues_interaction = np.array(pval_interaction_list)
+        inv_pvals_interaction = 1 - pvalues_interaction
 
-        pvalues_age = np.array(pval_age_list)
-        inv_pvals_age = 1 - pvalues_age
+        pvalues_DIT = np.array(pval_DIT_list)
+        inv_pvals_DIT = 1 - pvalues_DIT
 
-        pvalues_age2 = np.array(pval_age2_list)
-        inv_pvals_age2 = 1 - pvalues_age2
+        pvalues_Group = np.array(pval_Group_list)
+        inv_pvals_Group = 1 - pvalues_Group
 
         #Generate nifti files for SEED p-values using brainmask affine info
-        #MODEL VS NULL PVAL
+        #INTERACTION PVAL
         seedmap_vol1 = Vgm_vol #Vgm_vol = Vgm_nii.get_fdata()
         seedmap_vol1 = seedmap_vol1.reshape(-1, np.prod(dim3d)) #reshape to 2D
         seedmap_vol1[:] = 0 # clean img
-        seedmap_vol1[0,idx_GM] = inv_pvals_model[:]
+        seedmap_vol1[0,idx_GM] = inv_pvals_interaction[:]
         seedmap_vol1 = seedmap_vol1.reshape(dim3d) #reshape to 3D
 
-        # AGE PVAL
+        # DIT PVAL
         seedmap_vol2 = Vgm_vol #Vgm_vol = Vgm_nii.get_fdata()
         seedmap_vol2 = seedmap_vol2.reshape(-1, np.prod(dim3d)) #reshape to 2D
         seedmap_vol2[:] = 0 # clean img
-        seedmap_vol2[0,idx_GM] = inv_pvals_age[:]
+        seedmap_vol2[0,idx_GM] = inv_pvals_DIT[:]
         seedmap_vol2 = seedmap_vol2.reshape(dim3d) #reshape to 3D
 
-        # AGE2 PVAL
+        # Group PVAL
         seedmap_vol3 = Vgm_vol #Vgm_vol = Vgm_nii.get_fdata()
         seedmap_vol3 = seedmap_vol3.reshape(-1, np.prod(dim3d)) #reshape to 2D
         seedmap_vol3[:] = 0 # clean img
-        seedmap_vol3[0,idx_GM] = inv_pvals_age2[:]
+        seedmap_vol3[0,idx_GM] = inv_pvals_Group[:]
         seedmap_vol3 = seedmap_vol3.reshape(dim3d) #reshape to 3D
 
         #Generate nifti objects
@@ -147,19 +149,20 @@ def main ():
         # Save as nifti files
         filepath = os.path.join(output,'results')
 
-        filename1 = "developmentalchanges_seed-" + \
+        filename1 = "longitudinalTRT_seed-" + \
                     seednames[seed] + \
-                    "_space-MNI152NLin2009cAsym" + \
-                    "_modelvsnull_1-pvals-uncorrected.nii.gz"
-        filename2 = "developmentalchanges_seed-" + \
+                    "_space-MNI152_dim-9110991" + \
+                    "_interactionDITxgroup_1-pvals-uncorrected.nii.gz"
+        
+        filename2 = "longitudinalTRT_seed-" + \
                     seednames[seed] + \
-                    "_space-MNI152NLin2009cAsym" + \
-                    "_age_1-pvals-uncorrected.nii.gz"
+                    "_space-MNI152_dim-9110991" + \
+                    "_DIT_1-pvals-uncorrected.nii.gz"
 
-        filename3 = "developmentalchanges_seed-" + \
-                  seednames[seed] + \
-                  "_space-MNI152NLin2009cAsym" + \
-                  "_age2_1-pvals-uncorrected.nii.gz"
+        filename3 = "longitudinalTRT_seed-" + \
+                    seednames[seed] + \
+                    "_space-MNI152_dim-9110991" + \
+                    "_Group_1-pvals-uncorrected.nii.gz"
 
         if not os.path.exists(filepath):
             os.makedirs(filepath)

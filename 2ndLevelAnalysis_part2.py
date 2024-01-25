@@ -84,7 +84,7 @@ def main ():
         workdir = os.path.join(rootdir, "Desktop/striatconn")
         tvalpath = os.path.join(workdir, "secondlevel", "tmp")
         covariates = os.path.join(workdir, "secondlevel", "df_covars.csv")
-        output = os.path.join(workdir, "secondlevel")
+        output = os.path.join(workdir, "secondlevel","pvals")
 
         voxel = "voxel_33874_DorsalCaudate.txt"
         #seedname = 'DorsalCaudate'
