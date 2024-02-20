@@ -35,14 +35,14 @@ def parse():
 
 #%%
 def main ():
-    os.environ["ROOTDIR"] = '/Users/brainsur/'  # seth path
+    os.environ["ROOTDIR"] = '/Volumes/TOSHIBA'  # seth path
     rootdir = os.environ["ROOTDIR"]
     if hasattr(sys, "ps1"):
         options = {}
-        workdir = os.path.join(rootdir,"Desktop/striatconn")
+        workdir = os.path.join(rootdir,"striatconn")
         rawdata = os.path.join(workdir,"FEPtrt_prepro")
         #derivat = os.path.join(workdir,"derivatives","fmriprep-example")
-        output  = os.path.join(workdir,"firstlevel")
+        output  = os.path.join(workdir,"firstlevel_residuals")
         masks = os.path.join(workdir,"masks")
         participants = []
 
@@ -119,12 +119,14 @@ def main ():
             #anat = filesanat[0]
 
             #subj_i=participants.index(i)
-            t = np.zeros((len(idx_GM), len(seednames)))
-
+            
             #bold data
             func_img = nimg.load_img(bold)
             dim4d = func_img.shape
             N = dim4d[-1]  # number of time points
+            
+            t = np.zeros((len(idx_GM), len(seednames)))
+            residuals = np.zeros([len(idx_GM),N])
 
             # #reshape into 2d
             func_2d = func_img.get_fdata().reshape(-1, func_img.shape[-1]).T
@@ -151,7 +153,7 @@ def main ():
 
             # 1st Level Analysis: TSvox = b0 + b1*TSseed1 + b2*TSseed2 + ... + b6*TSseed6 + confounds
             print('First level analysis -----')
-            print('TSvox = b0 + b1*TSseed1 + b2*TSseed2 + ... + b6*TSseed6')
+            print('TSvox = b0 + b1*TSseed1 + b2*TSseed2 + ... + b6*TSseed6 + resid')
 
             # Add a constant term to the independent variables
             design_matrix = TS_seeds
@@ -165,6 +167,9 @@ def main ():
                 # Get the t-values
                 t_values = results.tvalues
                 t[vox, :] = t_values[1:7]   # t[voxels,seeds]
+                # Save residuals for cluster correction
+                resid = results.resid
+                residuals[vox,:] = resid # residuals[voxels,timepoints]
 
             #SAVE tmaps as nifti files
 
@@ -172,10 +177,10 @@ def main ():
             tmap_img = Vgm_img
             tmap = tmap_img.get_fdata()
 
-            for t_index in range(t.shape[1]):
+            for t_index in range(t.shape[1]): 
                 tmap = tmap.reshape(-1, np.prod(dim3d)) #reshape to 2D
                 tmap[:] = 0 # clean img
-                tmap[0,idx_GM] = t[:,t_index] #put t-values for each seed; seed 1 (t[:,0])
+                tmap[0,idx_GM] = t[:,t_index] #put t-values for each seed; seed 1 (t[:,0]) #t_index = seed index
                 tmap = tmap.reshape(dim3d) #reshape to 3D
 
                 #Generate nifti object
@@ -214,6 +219,36 @@ def main ():
                      os.makedirs(filepath)
 
                 tmap_img.to_filename(os.path.join(filepath, filename))
+
+
+            #RESIDUALS
+            resid_img = func_img
+            resid = resid_img.get_fdata()
+            resid2d = resid.reshape(np.prod(dim3d), N) #reshape to 2d (voxels, timepoints)
+            resid2d[:] = 0 # clean img
+            resid2d[idx_GM,:] = residuals 
+            resid = resid2d.reshape(dim4d)
+            
+            #Generate nifti object
+            resid_img = nib.Nifti1Image(resid, resid_img.affine)
+
+            resid_metadata = {
+                 'task': 'rest',
+                 'suffix': 'residuals',
+                 'extension': '.nii.gz',
+                 'session': str(ses),
+                 'subject': 'sub-'+i,
+                 'space': 'MNI152',
+             }
+
+            # Save as nifti file
+            filename = resid_metadata["subject"] + "_" + \
+                         "ses-"+resid_metadata['session'] + "_" + \
+                         "task-"+resid_metadata['task'] + "_" + \
+                         "space-"+resid_metadata['space'] + "_" + \
+                         resid_metadata["suffix"] + \
+                         resid_metadata["extension"]
+            resid_img.to_filename(os.path.join(filepath, filename))
 
             print('\t\t ----- Finished subject', i, ' Sess: ' ,ses,'----')
 
