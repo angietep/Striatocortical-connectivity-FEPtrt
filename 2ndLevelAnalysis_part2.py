@@ -34,7 +34,7 @@
     # I'm skipping the model and not saving a voxel.txt file - in 3rd part assing p = nan
     
     # TO RUN IN CLI
-    #  conda activate my-env 
+    # conda activate my-env 
     # cd ~/Desktop/striatconn/secondlevel/tmp/InfVentralCaudate 
     # find . -maxdepth 1 -type f -name "*.txt" | xargs -n 1 -P 10 python ~/Desktop/code/Striatocortical-connectivity-FEPtrt/2ndLevelAnalysis_part2.py -c ~/Desktop/striatconn/secondlevel/df_covars.csv -o ~/Desktop/striatconn/secondlevel/ -t ~/Desktop/striatconn/secondlevel/tmp -v
 
