@@ -33,10 +33,11 @@
     # 3) For voxels where not all subjects have values from the firstlevel (voxel_t has Nan)
     # I'm skipping the model and not saving a voxel.txt file - in 3rd part assing p = nan
     
-    # TO RUN IN CLI
+
+    # TO RUN IN CLI (CALL one seed per terminal tab)
     # conda activate my-env 
-    # cd ~/Desktop/striatconn/secondlevel/tmp/InfVentralCaudate 
-    # find . -maxdepth 1 -type f -name "*.txt" | xargs -n 1 -P 10 python ~/Desktop/code/Striatocortical-connectivity-FEPtrt/2ndLevelAnalysis_part2.py -c ~/Desktop/striatconn/secondlevel/df_covars.csv -o ~/Desktop/striatconn/secondlevel/ -t ~/Desktop/striatconn/secondlevel/tmp -v
+    # cd ~/Desktop/striatconnTRT/secondlevel/tvals/InfVentralCaudate 
+    # find . -maxdepth 1 -type f -name "*.txt" | xargs -n 1 -P 10 python ~/Desktop/GitHub_repos/Striatocortical-connectivity-FEPtrt/2ndLevelAnalysis_part2.py -c ~/Desktop/striatconnTRT/secondlevel/df_covars.csv -o ~/Desktop/striatconnTRT/secondlevel/pvals -t ~/Desktop/striatconnTRT/secondlevel/tvals -v
 
 #%%
 
@@ -76,13 +77,13 @@ def parse():
 
 #%%
 def main ():
-    os.environ["ROOTDIR"] = '/Users/brainsur/'  # seth path
+    os.environ["ROOTDIR"] = '/Users/brainsur/Desktop/'  # seth path
     # os.environ["ROOTDIR"] = '/Users/angeles/'  # seth path
     rootdir = os.environ["ROOTDIR"]
     if hasattr(sys, "ps1"):
         options = {}
-        workdir = os.path.join(rootdir, "Desktop/striatconn")
-        tvalpath = os.path.join(workdir, "secondlevel", "tmp")
+        workdir = os.path.join(rootdir, "striatconnTRT")
+        tvalpath = os.path.join(workdir, "secondlevel", "tvals")
         covariates = os.path.join(workdir, "secondlevel", "df_covars.csv")
         output = os.path.join(workdir, "secondlevel","pvals")
 
@@ -108,8 +109,8 @@ def main ():
     seedname = voxel.split("_")[-1]
     seedname = seedname.split(".")[0] 
    
-    if not os.path.exists(os.path.join(output,f"{seedname}" ,'pvals')):
-        os.makedirs(os.path.join(output, f"{seedname}",'pvals'))       
+    if not os.path.exists(os.path.join(output,f"{seedname}")):
+        os.makedirs(os.path.join(output, f"{seedname}"))       
     
             
     print(f"{voxel} out of 137035")
@@ -142,7 +143,7 @@ def main ():
 
     filevals = [beta_interaction, pval_interaction, beta_DIT, pval_DIT, beta_Group, pval_Group]
 
-    result_path = os.path.join(output, f"{seedname}",'pvals', file_name)
+    result_path = os.path.join(output, f"{seedname}", file_name)
 
     with open(os.path.join(result_path), 'w') as file:
         # Write column headers

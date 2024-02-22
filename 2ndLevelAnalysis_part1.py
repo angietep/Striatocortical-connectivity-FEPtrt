@@ -70,9 +70,9 @@ def main ():
     rootdir = os.environ["ROOTDIR"]
     if hasattr(sys, "ps1"):
         options = {}
-        workdir = os.path.join(rootdir,"Desktop/striatconn")
+        workdir = os.path.join(rootdir,"Desktop/striatconnTRT")
         #workdir = os.path.join("/Volumes/TOSHIBA")
-        rawdata = os.path.join(workdir,"FEPtrt_bids") # sub-1401_ses-01_task-rest_fdpower.txt
+        rawdata = os.path.join(workdir,"FEPtrt_prepro") # sub-1401_ses-01_task-rest_fdpower.txt
         #rawdata = os.path.join(workdir,"Preprocessed","FEPtrt_bids") # sub-1401_ses-01_task-rest_fdpower.txt
         masks = os.path.join(workdir,"masks")
         firstleveldir = os.path.join(workdir,"firstlevel") #  
@@ -81,7 +81,7 @@ def main ():
         #confounds = os.path.join(workdir,"derivatives","fmriprep")
         
         output  = os.path.join(workdir,"secondlevel")
-        tmp  = os.path.join(output,"tmp")
+        tmp  = os.path.join(output,"tvals")
         participants = []
 
     else :
@@ -149,7 +149,7 @@ def main ():
                                  )
                 if len(tmap_sixseeds) < 1:
                     continue
-                print(f"Subject: {p}, Session: {ses}, Seed: {tmap_sixseeds[seed].filename.split('seed-')[1].split('_')[0]}")
+                #print(f"Subject: {p}, Session: {ses}, Seed: {tmap_sixseeds[seed].filename.split('seed-')[1].split('_')[0]}")
 
                 #Load volume
                 tmap_bids =tmap_sixseeds[seed]
@@ -201,7 +201,7 @@ def main ():
 
         if seed == 0:
             df = pd.DataFrame(covars, columns=['ID', 'group','ses','t_DIT', 'age', 'sex', 'fdmean' ])
-            df.to_csv(os.path.join(tmp,'df_covars.csv'), index=False)
+            df.to_csv(os.path.join(output,'df_covars.csv'), index=False)
 
         for voxel in range(len(idx_GM)):
             voxel_data = tmap_allsubj[:, voxel]  # Extract voxel ts (t-vals for each subject)

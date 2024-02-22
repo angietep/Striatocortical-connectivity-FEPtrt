@@ -35,14 +35,14 @@ def parse():
 
 #%%
 def main ():
-    os.environ["ROOTDIR"] = '/Volumes/TOSHIBA'  # seth path
+    os.environ["ROOTDIR"] = '/Users/brainsur/Desktop'  # seth path
     rootdir = os.environ["ROOTDIR"]
     if hasattr(sys, "ps1"):
         options = {}
-        workdir = os.path.join(rootdir,"striatconn")
+        workdir = os.path.join(rootdir,"striatconnTRT")
         rawdata = os.path.join(workdir,"FEPtrt_prepro")
         #derivat = os.path.join(workdir,"derivatives","fmriprep-example")
-        output  = os.path.join(workdir,"firstlevel_residuals")
+        output  = os.path.join(workdir,"firstlevel")
         masks = os.path.join(workdir,"masks")
         participants = []
 
