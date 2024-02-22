@@ -137,6 +137,31 @@ def main ():
     output_csv_path = os.path.join(output,'clustcorrection_acfparameters.csv')
    
     output_df.to_csv(output_csv_path, index=False)
+     
+    acf_x = output_df['acf_x'].mean()
+    acf_y = output_df['acf_y'].mean()
+    acf_z = output_df['acf_z'].mean()
+    
+    # Replace 'your_command_here' with the actual 3dclustsim command and its arguments
+    afni_command = ['/Users/brainsur/abin/3dClustSim',
+                    '-acf', str(acf_x), str(acf_y), str(acf_z), 
+                    '-nxyz', '91','109','91', 
+                    '-dxyz', '2','2','2',
+                    '-athr', '0.05',
+                    '-pthr', '0.001']
+
+    try:
+        result = subprocess.run(
+            afni_command, check=True, capture_output=True, text=True)
+        
+        print(result.stdout)
+        # Extract the three numbers from the result.stdout
+       
+    except subprocess.CalledProcessError as e:
+        # Print the error if the command fails
+        print(f"Error: {e}")
+        print(f"Command output: {e.output}")
+
 
             
 #            3dClustSim -acf 0.38942 4.91292 11.9489 -nxyz 91 109 91 -dxyz 2 2 2 -athr 0.05 -pthr 0.001
