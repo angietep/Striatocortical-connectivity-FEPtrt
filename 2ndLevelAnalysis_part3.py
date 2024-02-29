@@ -33,10 +33,10 @@ def main ():
     rootdir = os.environ["ROOTDIR"]
     if hasattr(sys, "ps1"):
         options = {}
-        workdir = os.path.join(rootdir,"Desktop/striatconn")
+        workdir = os.path.join(rootdir,"Desktop/striatconnTRT")
         masks = os.path.join(workdir,"masks")
         tmp = os.path.join(workdir, "secondlevel")
-        output = os.path.join(tmp, "Results_nii")
+        output = os.path.join(tmp, "results")
         
         
     else :
@@ -73,6 +73,8 @@ def main ():
 
 
     for seed in range(len(seednames)):
+        
+        print(f"\t ----- Working on seed {seed}: {seednames[seed]} ----")
         #print(f"Extracting folder {seednames[seed]}.tar.gz") I've extracted outside for performance
         # Specify the path to the compressed archive (tar.gz file)
         #compressed_folder = os.path.join(tmp,f'{seednames[seed]}.tar.gz')
@@ -84,7 +86,7 @@ def main ():
         pval_interaction_list=[]
         pval_DIT_list=[]
         pval_Group_list=[]
-        pval_filepath = os.path.join(tmp, f'{seednames[seed]}','pvals')
+        pval_filepath = os.path.join(tmp,'pvals', f'{seednames[seed]}')
 
         for voxel in range(len(idx_GM)):
             #print(f"Voxel {voxel} out of {len(idx_GM)} for seed {seed}: {seednames[seed]}")
@@ -147,7 +149,7 @@ def main ():
         seedmap_nii3 = nib.Nifti1Image(seedmap_vol3, Vgm_nii.affine)
 
         # Save as nifti files
-        filepath = os.path.join(output,'results')
+        filepath = output
 
         filename1 = "longitudinalTRT_seed-" + \
                     seednames[seed] + \
