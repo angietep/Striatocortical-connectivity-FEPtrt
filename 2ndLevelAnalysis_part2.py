@@ -33,7 +33,6 @@
     # 3) For voxels where not all subjects have values from the firstlevel (voxel_t has Nan)
     # I'm skipping the model and not saving a voxel.txt file - in 3rd part assing p = nan
     
-
     # TO RUN IN CLI (CALL one seed per terminal tab)
     # conda activate my-env 
     # cd ~/Desktop/striatconnTRT/secondlevel/tvals/InfVentralCaudate 
@@ -112,8 +111,6 @@ def main ():
     if not os.path.exists(os.path.join(output,f"{seedname}")):
         os.makedirs(os.path.join(output, f"{seedname}"))       
     
-            
-    print(f"{voxel} out of 137035")
     
     file_name = voxel
     file_path = os.path.join(
