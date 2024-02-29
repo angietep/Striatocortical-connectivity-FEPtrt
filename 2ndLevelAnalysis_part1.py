@@ -217,14 +217,14 @@ def main ():
                    file.write(f'{value:.6f}\n')    # Save voxel_data as a floating-point number with 6 decimal places
 
             #np.savetxt(os.path.join(tmp,file_name), voxel_data, fmt='%f')
-            print(f'Saved {file_name}')
+            #print(f'Saved {file_name}')
 
-        print(f'Compressing folder {outputseed}')
+        #print(f'Compressing folder {outputseed}')
         # Create the compressed archive
-        shutil.make_archive(outputseed, 'gztar',outputseed)
+        #shutil.make_archive(outputseed, 'gztar',outputseed)
         # Remove the original folder
-        print(f'Folder compressed.\nRemoving original folder {outputseed}')
-        shutil.rmtree(outputseed)
+        #print(f'Folder compressed.\nRemoving original folder {outputseed}')
+        #shutil.rmtree(outputseed)
 
 #%%
 
