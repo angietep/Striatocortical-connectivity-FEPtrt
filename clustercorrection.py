@@ -48,8 +48,8 @@ def parse():
 
 #%%
 def main ():
-    #os.environ["ROOTDIR"] = '/Users/brainsur/Desktop'  # seth path
-    os.environ["ROOTDIR"] = '/Volumes/TOSHIBA'  # seth path
+    os.environ["ROOTDIR"] = '/Users/brainsur/Desktop'  # seth path
+    #os.environ["ROOTDIR"] = '/Volumes/TOSHIBA'  # seth path
     rootdir = os.environ["ROOTDIR"]
     if hasattr(sys, "ps1"):
         options = {}
@@ -112,9 +112,8 @@ def main ():
                 continue
             print(f"Subject: {p}, Session: {ses}, Residuals: {residuals}")
 
-            # Replace 'your_command_here' with the actual 3dclustsim command and its arguments
-            #afni_command = ['/Users/brainsur/abin/3dFWHMx',
-            afni_command = ['3dFWHMx',
+            #afni_command = ['3dFWHMx',
+            afni_command = ['/Users/brainsur/abin/3dFWHMx',
                             '-mask', GMmask,
                             '-input', residuals[0].path]
 
@@ -143,10 +142,9 @@ def main ():
     acf_x = output_df['acf_x'].mean()
     acf_y = output_df['acf_y'].mean()
     acf_z = output_df['acf_z'].mean()
-    
-    # Replace 'your_command_here' with the actual 3dclustsim command and its arguments
-    #afni_command = ['/Users/brainsur/abin/3dClustSim',
-    afni_command = ['3dClustSim',
+
+    #afni_command = ['3dClustSim',
+    afni_command = ['/Users/brainsur/abin/3dClustSim',
                     '-acf', str(acf_x), str(acf_y), str(acf_z), 
                     '-nxyz', '91','109','91', 
                     '-dxyz', '2','2','2',
@@ -166,8 +164,6 @@ def main ():
         print(f"Command output: {e.output}")
 
 
-            
-#            3dClustSim -acf 0.38942 4.91292 11.9489 -nxyz 91 109 91 -dxyz 2 2 2 -athr 0.05 -pthr 0.001
             
 
 #%%
