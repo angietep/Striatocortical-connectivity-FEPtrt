@@ -125,7 +125,7 @@ def main ():
         
     df['voxel_t'] = voxel_t
 
-    model_formula = 'voxel_t ~ age + sex + fdmean + t_DIT+ group + t_DIT:group + (1|ID)'
+    model_formula = 'voxel_t ~ age + sex + fdmean + t_DIT+ group + t_DIT:group + (1|ID)' #PANSS_TP + APdose
     mixed_model = smf.mixedlm(model_formula, df, groups=df['ID'])
     result = mixed_model.fit()
 
