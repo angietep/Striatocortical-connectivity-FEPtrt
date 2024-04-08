@@ -125,7 +125,7 @@ def main ():
         
     df['voxel_t'] = voxel_t
 
-    model_formula = 'voxel_t ~ age + sex + fdmean + t_DIT+ group + t_DIT:group + (1|ID)' #PANSS_TP + APdose
+    model_formula = 'voxel_t ~ age + sex + APdose + PANSS_TP + fdmean + t_DIT+ group + t_DIT:group + (1|ID)' 
     mixed_model = smf.mixedlm(model_formula, df, groups=df['ID'])
     result = mixed_model.fit()
 
@@ -135,17 +135,22 @@ def main ():
     beta_DIT = result.params['t_DIT']
     pval_Group = result.pvalues['group[T.nonTRT]']
     beta_Group = result.params['group[T.nonTRT]']
+    pval_APdose = result.pvalues['APdose']
+    beta_APdose = result.params['APdose']
+    pval_PANSS_TP = result.pvalues['PANSS_TP']
+    beta_PANSS_TP = result.params['PANSS_TP']
 
     df = df.drop(columns=['voxel_t'])
 
-    filevals = [beta_interaction, pval_interaction, beta_DIT, pval_DIT, beta_Group, pval_Group]
+    filevals = [beta_interaction, pval_interaction, beta_DIT, pval_DIT, beta_Group, pval_Group,
+                beta_APdose, pval_APdose, beta_PANSS_TP, pval_PANSS_TP]
 
     result_path = os.path.join(output, f"{seedname}", file_name)
 
     with open(os.path.join(result_path), 'w') as file:
         # Write column headers
         file.write(
-            "beta_interaction\tpval_interaction\tbeta_DIT\tpval_DIT\tbeta_Group\tpval_Group\n")
+            "beta_interaction\tpval_interaction\tbeta_DIT\tpval_DIT\tbeta_Group\tpval_Group\tbeta_APdose\tpval_APdose\tbeta_PANSSTP\tpval_PANSSTP\n")
         # Write p-values in different columns
         for val in filevals:
             if val == filevals[-1]:

@@ -65,15 +65,15 @@ def parse():
 
 #%%
 def main ():
-    os.environ["ROOTDIR"] = '/Users/brainsur/'  # seth path
-    #os.environ["ROOTDIR"] = '/Users/angeles/'  # seth path
+    #os.environ["ROOTDIR"] = '/Users/brainsur/'  # seth path
+    os.environ["ROOTDIR"] = '/Users/angeles/'  # seth path
     rootdir = os.environ["ROOTDIR"]
     if hasattr(sys, "ps1"):
         options = {}
-        workdir = os.path.join(rootdir,"Desktop/striatconnTRT")
-        #workdir = os.path.join("/Volumes/TOSHIBA")
-        rawdata = os.path.join(workdir,"FEPtrt_prepro") # sub-1401_ses-01_task-rest_fdpower.txt
-        #rawdata = os.path.join(workdir,"Preprocessed","FEPtrt_bids") # sub-1401_ses-01_task-rest_fdpower.txt
+        #workdir = os.path.join(rootdir,"Desktop/striatconnTRT")
+        workdir = os.path.join("/Volumes/TOSHIBA/striatconnTRT")
+        #rawdata = os.path.join(workdir,"FEPtrt_prepro") # sub-1401_ses-01_task-rest_fdpower.txt
+        rawdata = os.path.join(workdir,"../Preprocessed","FEPtrt_bids") # sub-1401_ses-01_task-rest_fdpower.txt
         masks = os.path.join(workdir,"masks")
         firstleveldir = os.path.join(workdir,"firstlevel") #  
         
@@ -171,6 +171,8 @@ def main ():
                     age_i = (dem_i.MRI_[float(ses)-1]-dem_i.Fecha_nacimiento[float(ses)-1]).days // 365 #find ses
                     group_i = dem_i.Grupo[float(ses)-1]
                     t_DIT_i = dem_i.t[float(ses)-1]
+                    PANSSTP_i = dem_i.PANSS_TP_[float(ses)-1]
+                    APdose_i = dem_i.APdose_[float(ses)-1]
                     
                     confounds_ents = {}
                     confounds_ents["subject"] = p
@@ -185,7 +187,7 @@ def main ():
                     noiseconfounds_df = pd.read_csv(confounds, sep='\t', header=None, names=["framewise_displacement"])
                     fdmean_i = noiseconfounds_df.framewise_displacement.mean()
 
-                    covars.append((p, group_i, ses, t_DIT_i, age_i, sex_i, fdmean_i))
+                    covars.append((p, group_i, ses, t_DIT_i, PANSSTP_i, APdose_i, age_i, sex_i, fdmean_i))
 
         # Stack the arrays in the list horizontally
         tmap_allsubj = np.hstack(tmap_allsubj).T #dimensions: subj x voxels_GM
@@ -200,7 +202,7 @@ def main ():
             os.mkdir(outputseed)
 
         if seed == 0:
-            df = pd.DataFrame(covars, columns=['ID', 'group','ses','t_DIT', 'age', 'sex', 'fdmean' ])
+            df = pd.DataFrame(covars, columns=['ID', 'group','ses','t_DIT', 'PANSS_TP', 'APdose', 'age', 'sex', 'fdmean' ])
             df.to_csv(os.path.join(output,'df_covars.csv'), index=False)
 
         for voxel in range(len(idx_GM)):
