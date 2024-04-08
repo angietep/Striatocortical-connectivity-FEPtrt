@@ -8,10 +8,12 @@ library(tidyverse)
 
 # PREPARE DATA ####
 ## Import data ####  
-sample<-read.csv("subjects_PEP_Jan2024.csv")
+sample<-read.csv("subjects_PEP_Apr2024.csv")
 #keep only columns and rows of interest
 df <- sample[, c("ID", "Grupo","Fecha_nacimiento","Sexo", 
-                 "MRI_1","MRI_2","MRI_3","MRI_4",
+                 "MRI_1","MRI_2","MRI_3","MRI_4", "MRI_5",
+                 "APdose_1","APdose_2","APdose_3","APdose_4","APdose_5",
+                 "PANSS_TP_1","PANSS_TP_2","PANSS_TP_3","PANSS_TP_4","PANSS_TP_5",
                  "DUP.months.","DIT_preSess1.days.",
                  "DIT_sess1toLastsess","Duration_of_illness.months.",
                  "Excluir")]
@@ -28,6 +30,7 @@ df$MRI_1 <- as.Date(df$MRI_1, format = "%d/%m/%Y")
 df$MRI_2 <- as.Date(df$MRI_2, format = "%d/%m/%Y")
 df$MRI_3 <- as.Date(df$MRI_3, format = "%d/%m/%Y")
 df$MRI_4 <- as.Date(df$MRI_4, format = "%d/%m/%Y")
+df$MRI_5 <- as.Date(df$MRI_5, format = "%d/%m/%Y")
 
 #Factors: ID, Group (TRT, nonTRT), Sex
 df$ID <- as.factor(df$ID)
@@ -45,11 +48,32 @@ df$DUP.months. <- gsub(",", ".", df$DUP.months.)
 df$DIT_preSess1.days. <- gsub(",", ".", df$DIT_preSess1.days.)
 df$DIT_sess1toLastsess <- gsub(",", ".", df$DIT_sess1toLastsess)
 df$Duration_of_illness.months. <- gsub(",", ".", df$Duration_of_illness.months.)
+df$APdose_1 <- gsub(",", ".", df$APdose_1)
+df$APdose_2 <- gsub(",", ".", df$APdose_2)
+df$APdose_3 <- gsub(",", ".", df$APdose_3)
+df$APdose_4 <- gsub(",", ".", df$APdose_4)
+df$APdose_5 <- gsub(",", ".", df$APdose_5)
+df$PANSS_TP_1 <- gsub(",", ".", df$PANSS_TP_1)
+df$PANSS_TP_2 <- gsub(",", ".", df$PANSS_TP_2)
+df$PANSS_TP_3 <- gsub(",", ".", df$PANSS_TP_3)
+df$PANSS_TP_4 <- gsub(",", ".", df$PANSS_TP_4)
+df$PANSS_TP_5 <- gsub(",", ".", df$PANSS_TP_5)
+
 # Then) 
 df$DUP.months. <- as.numeric(df$DUP.months.)
 df$DIT_preSess1.days. <- as.numeric(df$DIT_preSess1.days.)
 df$DIT_sess1toLastsess <- as.numeric(df$DIT_sess1toLastsess)
 df$Duration_of_illness.months. <- as.numeric(df$Duration_of_illness.months.)
+df$APdose_1 <- as.numeric(df$APdose_1)
+df$APdose_2 <- as.numeric(df$APdose_2)
+df$APdose_3 <- as.numeric(df$APdose_3)
+df$APdose_4 <- as.numeric(df$APdose_4)
+df$APdose_5 <- as.numeric(df$APdose_5)
+df$PANSS_TP_1  <- as.numeric(df$PANSS_TP_1)
+df$PANSS_TP_2  <- as.numeric(df$PANSS_TP_2)
+df$PANSS_TP_3  <- as.numeric(df$PANSS_TP_3)
+df$PANSS_TP_4  <- as.numeric(df$PANSS_TP_4)
+df$PANSS_TP_5  <- as.numeric(df$PANSS_TP_5)
 
 sapply(df, class)
 
@@ -58,11 +82,10 @@ sapply(df, class)
 #PATIENTS
 df <- df[!df$Excluir==1,]
 
-df <- df[!is.na(df$Fecha_nacimiento), ]
-df <- df[!is.na(df$Sexo), ]
-df <- df[!is.na(df$Grupo), ]
-df <- df[!is.na(df$DIT_preSess1.days.), ]
-
+df <- df[!is.na(df$Fecha_nacimiento), ] #excluded 0
+df <- df[!is.na(df$Sexo), ] #excluded 0
+df <- df[!is.na(df$Grupo), ] #excluded 2
+df <- df[!is.na(df$DIT_preSess1.days.), ] #excluded 0
 
 #esta es la opción de incluirlos haciendo cero los NA
 #df$DUP.months.[is.na(df$DUP.months.)] <- 0  
@@ -83,6 +106,8 @@ df$t1 <- df$DIT_preSess1.days./30
 df$t2<- df$t1 + as.numeric(difftime(df$MRI_2, df$MRI_1, units = 'weeks'))/4  
 df$t3<- df$t1 + as.numeric(difftime(df$MRI_3, df$MRI_1, units = 'weeks'))/4
 df$t4<- df$t1 + as.numeric(difftime(df$MRI_4, df$MRI_1, units = 'weeks'))/4
+df$t5<- df$t1 + as.numeric(difftime(df$MRI_5, df$MRI_1, units = 'weeks'))/4
+
 
 ## Reorder by t1####
 df <- df[order(df$t1), ]
@@ -117,7 +142,7 @@ ggplot(df %>%
 
 # Export the data frame to a CSV file
 long_data <- pivot_longer(df, 
-                          cols = starts_with("MRI") | starts_with("t"),
+                          cols = starts_with("MRI") | starts_with("t") | starts_with("AP") | starts_with("PANSS"),
                           names_to = c(".value", "session"),
                           names_pattern = "(\\D+)(\\d+)")
 
@@ -141,6 +166,7 @@ df$t1 <- df$DUP.months. + df$DIT_preSess1.days./30
 df$t2<- df$t1 + as.numeric(difftime(df$MRI_2, df$MRI_1, units = 'weeks'))/4  
 df$t3<- df$t1 + as.numeric(difftime(df$MRI_3, df$MRI_1, units = 'weeks'))/4
 df$t4<- df$t1 + as.numeric(difftime(df$MRI_4, df$MRI_1, units = 'weeks'))/4
+df$t5<- df$t1 + as.numeric(difftime(df$MRI_5, df$MRI_1, units = 'weeks'))/4
 
 ## Reorder by t1####
 df <- df[order(df$t1), ]
@@ -175,7 +201,7 @@ ggplot(df %>%
 # Export the data frame to a CSV file
 
 long_data <- pivot_longer(df, 
-                          cols = starts_with("MRI") | starts_with("t"),
+                          cols = starts_with("MRI") | starts_with("t") | starts_with("AP") | starts_with("PANSS"),
                           names_to = c(".value", "session"),
                           names_pattern = "(\\D+)(\\d+)")
 
