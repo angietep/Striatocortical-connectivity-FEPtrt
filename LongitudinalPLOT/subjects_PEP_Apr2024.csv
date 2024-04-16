@@ -11,7 +11,7 @@ Resist sin CLZ,1405,0,,Resistente,2/02/1996,Masculino,NA,,9/02/2017,870,11,8/06/
 ,1410,1,Afectivo,No_resistente,15/09/1994,Femenino,NA,,11/05/2017,413,14,17/08/2017,75,7,NA,NA,NA,NA,NA,NA,NA,NA,NA,"6,0",17,"98,0","9,8",
 ,1411,1,NoMRI,Resistente,17/04/1996,Masculino,13/04/2017,,18/05/2017,975,28,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"48,0",77,"0,0","50,6",
 ,1412,0,,No_resistente,19/08/1996,Masculino,NA,,25/05/2017,975,14,24/08/2017,630,7,NA,NA,NA,NA,NA,NA,NA,NA,NA,"11,0",58,"91,0","16,0",
-,1413,0,,Resistente,25/09/1995,Masculino,18/04/2023,,15/06/2017,510,16,25/01/2018,0,28,3/06/2021,NA,31,10/02/2022,NA,27,NA,NA,NA,"18,0",16,"1701,0","75,2",APDOSE3: flufenacina25mg al mes; APDOSE4: flufenacina25mg al mes
+,1413,0,,Resistente,25/09/1995,Masculino,18/04/2023,,15/06/2017,510,16,25/01/2018,0,28,3/06/2021,280,31,10/02/2022,280,27,NA,NA,NA,"18,0",16,"1701,0","75,2",APDOSE3: flufenacina25mg al mes; APDOSE4: flufenacina25mg al mes
 ,1414,1,NoMRI,No_resistente,20/03/1990,Masculino,NA,,NA,100,32,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"2,5",13,"0,0","2,9",
 ,1415,0,,No_resistente,23/10/1998,Masculino,NA,,22/06/2017,360,21,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"9,0",21,"0,0","9,7",
 Solo T1 en sess1,1416,0,,No_resistente,30/08/1997,Masculino,NA,,NA,600,12,12/10/2017,600,7,NA,NA,NA,NA,NA,NA,NA,NA,NA,"1,0",20,"0,0","1,7",
@@ -24,7 +24,7 @@ Solo T1 en sess1,1416,0,,No_resistente,30/08/1997,Masculino,NA,,NA,600,12,12/10/
 ,1423,0,,No_resistente,2/11/1998,Masculino,NA,,7/09/2017,360,12,19/04/2018,600,7,NA,NA,NA,NA,NA,NA,NA,NA,NA,"15,0",36,"224,0","23,7",
 ,1424,0,,No_resistente,26/05/1993,Masculino,NA,,14/09/2017,960,15,22/02/2018,600,9,NA,NA,NA,NA,NA,NA,NA,NA,NA,"48,0",19,"161,0","54,0",
 ,1425,0,,No_resistente,5/04/2000,Femenino,NA,,28/09/2017,450,12,14/12/2017,0,7,29/07/2021,0,7,17/03/2022,0,7,NA,NA,NA,"8,0",12,"1631,0","62,8",
-,1426,0,,No_resistente,6/11/1996,Masculino,NA,,5/10/2017,600,13,15/03/2018,180,10,12/05/2022,NA,15,NA,NA,NA,NA,NA,NA,"24,0",23,"1680,0","80,8",APDOSE2: risperidona3mg; APDOSE3: paliperidona 150mg al mes
+,1426,0,,No_resistente,6/11/1996,Masculino,NA,,5/10/2017,600,13,15/03/2018,180,10,12/05/2022,360,15,NA,NA,NA,NA,NA,NA,"24,0",23,"1680,0","80,8",APDOSE2: risperidona3mg; APDOSE3: paliperidona 150mg al mes
 ,1427,0,,No_resistente,26/02/2001,Masculino,NA,15/10/2017,26/10/2017,510,22,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"8,0",11,"0,0","8,4",
 ,1428,0,,No_resistente,16/04/1996,Masculino,NA,,2/11/2017,120,9,01/03/2018,180,8,22/07/2021,450,7,11/05/2023,0,13,22/02/2024,0,7,"5,0",13,"2016,0","72,6",APDOSE3: risperidona7.5mg
 ,1429,0,,No_resistente,30/09/1994,Masculino,NA,,16/11/2017,870,14,7/07/2022,0,7,NA,NA,NA,NA,NA,NA,NA,NA,NA,"11,0",32,"1694,0","68,5",
@@ -43,7 +43,7 @@ Resist sin clz,1433,0,,Resistente,5/07/2001,Masculino,NA,,14/12/2017,360,16,23/0
 ,1442,0,,No_resistente,8/08/1998,Masculino,NA,,19/04/2018,270,14,27/07/2018,270,8,NA,NA,NA,NA,NA,NA,NA,NA,NA,"22,0",20,"99,0","26,0",
 ,1443,1,CriteriosResistencia,NA,19/01/2002,Masculino,26/04/2018,,3/05/2018,500,11,26/07/2018,475,10,30/06/2022,NA,NA,27/07/2023,NA,NA,NA,NA,NA,"5,0",40,"1911,0","70,0",
 Falta preprocesar sess4 y sess5,1444,0,,No_resistente,2/05/1999,Masculino,NA,,10/05/2018,900,17,16/08/2018,300,10,19/08/2021,0,7,3/08/2023,0,7,18/01/2024,0,7,"4,0",14,"1911,0","68,2",
-,1445,0,,No_resistente,18/12/1997,Masculino,NA,,17/05/2018,960,17,2/08/2018,870,7,9/09/2021,150,7,25/05/2023,NA,7,NA,NA,NA,"3,0",23,"1834,0","64,9",APDOSE3: olanzapina5mg; APDOSE4: paliperidona75mg al mes
+,1445,0,,No_resistente,18/12/1997,Masculino,NA,,17/05/2018,960,17,2/08/2018,870,7,9/09/2021,150,7,25/05/2023,180,7,NA,NA,NA,"3,0",23,"1834,0","64,9",APDOSE3: olanzapina5mg; APDOSE4: paliperidona75mg al mes
 ,1446,1,Afectivo,No_resistente,20/06/1995,Masculino,NA,,24/05/2018,780,13,23/08/2018,600,7,14/10/2021,NA,NA,NA,NA,NA,NA,NA,NA,"2,0",22,"1239,0","44,0",
 ,1447,0,,Resistente,19/08/1998,Masculino,21/01/2021,,31/05/2018,131,18,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"1,0",20,"0,0","1,7",
 ,1448,0,,No_resistente,2/01/1994,Masculino,NA,,21/06/2018,270,15,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"24,0",16,"0,0","24,5",
@@ -81,7 +81,7 @@ Falta preprocesar sess3,1478,0,,Resistente,4/02/1996,Masculino,13/06/2019,,25/04
 ,1480,0,,No_resistente,14/07/1995,Masculino,NA,,30/05/2019,360,18,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"11,0",18,"0,0","11,6",
 ,1481,0,,No_resistente,15/04/2001,Masculino,NA,,30/05/2019,600,11,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"11,0",12,"0,0","11,4",
 ,1482,0,,Resistente,5/07/2002,Masculino,3/02/2020,,6/06/2019,810,15,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"4,0",23,"0,0","4,8",
-,1483,0,,Resistente,1/03/2000,Masculino,4/02/2020,,13/06/2019,690,15,2/12/2021,NA,13,NA,NA,NA,NA,NA,NA,NA,NA,NA,"4,4",29,"903,0","35,5",APDOSE2: flupentixol 20mg cada 14dias
+,1483,0,,Resistente,1/03/2000,Masculino,4/02/2020,,13/06/2019,690,15,2/12/2021,280,13,NA,NA,NA,NA,NA,NA,NA,NA,NA,"4,4",29,"903,0","35,5",APDOSE2: flupentixol 20mg cada 14dias
 ,1484,0,,No_resistente,18/08/2001,Femenino,NA,,20/06/2019,500,18,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"1,0",29,"0,0","2,0",
 ,1485,0,,Resistente,27/02/2004,Masculino,7/10/2019,,20/06/2019,400,10,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"40,8",23,"0,0","41,6",
 ,1486,0,,Resistente,22/11/2000,Femenino,20/08/2019,4/05/2019,27/06/2019,600,NA,2/12/2021,0,7,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,54,"889,0",NA,APDOSE1: olanzapina20mg
@@ -120,7 +120,7 @@ Falta preprocesar sess3,1500,0,,No_resistente,24/03/2001,Femenino,NA,,3/10/2019,
 ,1601,0,,No_resistente,18/01/2000,Masculino,NA,05/10/2021,14/10/2021,90,21,6/10/2022,0,21,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,9,"357,0",NA,APDOSE1: risperidona 1.5mg
 ,1602,1,NoesPEP,No_resistente,20/02/1992,Masculino,NA,01/06/2016,21/10/2021,NA,NA,4/08/2022,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"287,0",NA,
 ,1603,1,NoMRI,NA,NA,Femenino,NA,,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"0,0",NA,
-Preguntar a Camila si empezó clz,1604,0,,NA,08/06/1999,Femenino,NA,ambulatorio,24/02/2022,NA,8,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"0,0",NA,APDOSE1: flupentixol 20mg cada 14dias
+Preguntar a Camila si empezó clz,1604,0,,NA,08/06/1999,Femenino,NA,ambulatorio,24/02/2022,280,8,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"0,0",NA,APDOSE1: flupentixol 20mg cada 14dias
 Preguntar a Camila si empezó clz,1605,0,,NA,11/06/2001,Masculino,NA,20/05/2022,20/10/2022,0,13,11/05/2023,0,7,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,153,"203,0",NA,
 ,1606,1,NoMRI,NA,NA,Femenino,NA,,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"0,0",NA,
-,1607,1,NoesPEP,NA,NA,Masculino,NA,ambulatorio (hospitalizacion urgencia 11/01/2023),26/01/2023,NA,22,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,15,"0,0",NA,APDOSE1: paliperidona75mg por mes + olanzapina5mg
+,1607,1,NoesPEP,NA,NA,Masculino,NA,ambulatorio (hospitalizacion urgencia 11/01/2023),26/01/2023,330,22,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,15,"0,0",NA,APDOSE1: paliperidona75mg por mes + olanzapina5mg
