@@ -1,5 +1,5 @@
 # SECOND LEVEL PART 1: This script reads t-maps from all subjects (output of
-# the first level) and saves in a tmp folder txt files with t-values of all
+# the first level) and saves in a tvals folder txt files with t-values of all
 # subjects for each voxel of the gray matter mask.
 
 # CONSIDERATIONS:
@@ -42,6 +42,7 @@ import argparse
 import pandas as pd
 import shutil
 
+
 #%%
 def parse():
 
@@ -65,15 +66,15 @@ def parse():
 
 #%%
 def main ():
-    #os.environ["ROOTDIR"] = '/Users/brainsur/'  # seth path
-    os.environ["ROOTDIR"] = '/Users/angeles/'  # seth path
+    os.environ["ROOTDIR"] = '/Users/brainsur/'  # seth path
+    #os.environ["ROOTDIR"] = '/Users/angeles/'  # seth path
     rootdir = os.environ["ROOTDIR"]
     if hasattr(sys, "ps1"):
         options = {}
-        #workdir = os.path.join(rootdir,"Desktop/striatconnTRT")
-        workdir = os.path.join("/Volumes/TOSHIBA/striatconnTRT")
-        #rawdata = os.path.join(workdir,"FEPtrt_prepro") # sub-1401_ses-01_task-rest_fdpower.txt
-        rawdata = os.path.join(workdir,"../Preprocessed","FEPtrt_bids") # sub-1401_ses-01_task-rest_fdpower.txt
+        workdir = os.path.join(rootdir,"Desktop/striatconnTRT")
+        #workdir = os.path.join("/Volumes/TOSHIBA/striatconnTRT")
+        rawdata = os.path.join(workdir,"FEPtrt_prepro") # sub-1401_ses-01_task-rest_fdpower.txt
+        #rawdata = os.path.join(workdir,"../Preprocessed","FEPtrt_bids") # sub-1401_ses-01_task-rest_fdpower.txt
         masks = os.path.join(workdir,"masks")
         firstleveldir = os.path.join(workdir,"firstlevel") #  
         
@@ -203,6 +204,7 @@ def main ():
 
         if seed == 0:
             df = pd.DataFrame(covars, columns=['ID', 'group','ses','t_DIT', 'PANSS_TP', 'APdose', 'age', 'sex', 'fdmean' ])
+            df = df.dropna()
             df.to_csv(os.path.join(output,'df_covars.csv'), index=False)
 
         for voxel in range(len(idx_GM)):
