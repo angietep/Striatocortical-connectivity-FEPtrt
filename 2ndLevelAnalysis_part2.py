@@ -88,12 +88,7 @@ def main ():
 
         voxel = "voxel_33874_DorsalCaudate.txt"
         #seedname = 'DorsalCaudate'
-        #'DCPutamen'          
-         #
-          #    'DRPutamen',
-           #   'InfVentralCaudate',
-            #  'SupVentralCaudate',
-             # 'VRPutamen' 
+       
 
     else:
         options = parse()
