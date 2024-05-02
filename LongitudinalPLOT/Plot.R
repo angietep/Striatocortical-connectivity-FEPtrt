@@ -3,7 +3,9 @@
 
 # Set environment ####
 rm(list= ls())# ctrl + L to clear console
-setwd("~/Documents/GitHub/Striatocortical-connectivity-FEPtrt/LongitudinalPLOT/")
+#setwd("~/Documents/GitHub/Striatocortical-connectivity-FEPtrt/LongitudinalPLOT/")
+setwd("/Users/brainsur/Desktop/GitHub_repos/Striatocortical-connectivity-FEPtrt/LongitudinalPLOT")
+
 library(tidyverse)
 
 # PREPARE DATA ####

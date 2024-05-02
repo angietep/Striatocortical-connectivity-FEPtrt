@@ -4,11 +4,6 @@
 
 # CONSIDERATIONS:
 
-    # TSV files with preprocessing confounds need to be in a different folder
-    # than firstlevel outputs. If not, pyBIDS will read subjects list from
-    # TSV folder (and there are some subjects for who we have tsv folder but
-    # no firstlevel output)
-
     # 1) The pyBIDS function to filter files based on 'invalid_filters' does not
     # work for me. Because of that, I cannot (easily) select the seed-file based
     # on file name. I'm exclusively relying on the order of the files being the
@@ -29,8 +24,6 @@
                      # #invalid_filters="allow"
                      # )
 
-    # 2) I don't know why there are some subjects who have more than one run for the same
-    # session. We are using all runs available.
 #%%
 
 import numpy as np
