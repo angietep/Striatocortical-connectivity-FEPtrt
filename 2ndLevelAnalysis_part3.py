@@ -83,11 +83,14 @@ def main ():
         #with tarfile.open(compressed_folder, 'r:gz') as archive:
         #    archive.extractall(outputseed)
         #os.remove(compressed_folder)
+        pval_filepath = os.path.join(tmp,'pvals', f'{seednames[seed]}')
+
         pval_interaction_list=[]
         pval_DIT_list=[]
         pval_Group_list=[]
-        pval_filepath = os.path.join(tmp,'pvals', f'{seednames[seed]}')
-
+        pval_APdose_list = []
+        pval_PANSS_TP_list = []
+        
         for voxel in range(len(idx_GM)):
             #print(f"Voxel {voxel} out of {len(idx_GM)} for seed {seed}: {seednames[seed]}")
 
@@ -97,6 +100,8 @@ def main ():
                 pval_interaction = np.nan
                 pval_DIT = np.nan
                 pval_Group = np.nan
+                pval_APdose = np.nan
+                pval_PANSS_TP = np.nan
                 
             # Read the text file into a DataFrame
             else:
@@ -106,10 +111,14 @@ def main ():
                 pval_interaction = df["pval_interaction"].values[0]
                 pval_DIT = df["pval_DIT"].values[0]
                 pval_Group = df["pval_Group"].values[0]
+                pval_APdose = df["pval_APdose"].values[0]
+                pval_PANSS_TP = df["pval_PANSSTP"].values[0]
 
             pval_interaction_list.append(pval_interaction)
             pval_DIT_list.append(pval_DIT)
             pval_Group_list.append(pval_Group)
+            pval_APdose_list.append(pval_APdose)
+            pval_PANSS_TP_list.append(pval_PANSS_TP)
 
         # Convert p-values to a NumPy array and invert (1-pval)
         pvalues_interaction = np.array(pval_interaction_list)
@@ -120,6 +129,12 @@ def main ():
 
         pvalues_Group = np.array(pval_Group_list)
         inv_pvals_Group = 1 - pvalues_Group
+        
+        pvalues_APdose = np.array(pval_APdose_list) 
+        inv_pvals_APdose = 1 - pvalues_APdose
+        
+        pvalues_PANSS_TP = np.array(pval_PANSS_TP_list)
+        inv_pvals_PANSS_TP = 1 - pvalues_PANSS_TP
 
         #Generate nifti files for SEED p-values using brainmask affine info
         #INTERACTION PVAL
@@ -143,13 +158,29 @@ def main ():
         seedmap_vol3[0,idx_GM] = inv_pvals_Group[:]
         seedmap_vol3 = seedmap_vol3.reshape(dim3d) #reshape to 3D
 
+        # Group APdose
+        seedmap_vol4 = Vgm_vol #Vgm_vol = Vgm_nii.get_fdata()
+        seedmap_vol4 = seedmap_vol4.reshape(-1, np.prod(dim3d)) #reshape to 2D
+        seedmap_vol4[:] = 0 # clean img
+        seedmap_vol4[0,idx_GM] = inv_pvals_APdose[:]
+        seedmap_vol4 = seedmap_vol4.reshape(dim3d) #reshape to 3D
+
+        # Group PANSS_TP
+        seedmap_vol5 = Vgm_vol #Vgm_vol = Vgm_nii.get_fdata()
+        seedmap_vol5 = seedmap_vol5.reshape(-1, np.prod(dim3d)) #reshape to 2D
+        seedmap_vol5[:] = 0 # clean img
+        seedmap_vol5[0,idx_GM] = inv_pvals_PANSS_TP[:]
+        seedmap_vol5 = seedmap_vol5.reshape(dim3d) #reshape to 3D
+
+
         #Generate nifti objects
         seedmap_nii1 = nib.Nifti1Image(seedmap_vol1, Vgm_nii.affine)
         seedmap_nii2 = nib.Nifti1Image(seedmap_vol2, Vgm_nii.affine)
         seedmap_nii3 = nib.Nifti1Image(seedmap_vol3, Vgm_nii.affine)
+        seedmap_nii4 = nib.Nifti1Image(seedmap_vol4, Vgm_nii.affine)
+        seedmap_nii5 = nib.Nifti1Image(seedmap_vol5, Vgm_nii.affine)
 
         # Save as nifti files
-        filepath = output
 
         filename1 = "longitudinalTRT_seed-" + \
                     seednames[seed] + \
@@ -166,12 +197,25 @@ def main ():
                     "_space-MNI152_dim-9110991" + \
                     "_Group_1-pvals-uncorrected.nii.gz"
 
-        if not os.path.exists(filepath):
-            os.makedirs(filepath)
+        filename4 = "longitudinalTRT_seed-" + \
+                    seednames[seed] + \
+                    "_space-MNI152_dim-9110991" + \
+                    "_APdose_1-pvals-uncorrected.nii.gz"
 
-        seedmap_nii1.to_filename(os.path.join(filepath, filename1))
-        seedmap_nii2.to_filename(os.path.join(filepath, filename2))
-        seedmap_nii3.to_filename(os.path.join(filepath, filename3))
+        filename5 = "longitudinalTRT_seed-" + \
+                    seednames[seed] + \
+                    "_space-MNI152_dim-9110991" + \
+                    "_PANSS_TP_1-pvals-uncorrected.nii.gz"
+                      
+
+        if not os.path.exists(output):
+            os.makedirs(output)
+
+        seedmap_nii1.to_filename(os.path.join(output, filename1))
+        seedmap_nii2.to_filename(os.path.join(output, filename2))
+        seedmap_nii3.to_filename(os.path.join(output, filename3))
+        seedmap_nii4.to_filename(os.path.join(output, filename4))
+        seedmap_nii5.to_filename(os.path.join(output, filename5))
 
         print(f"\t ----- Finished seed {seed}: {seednames[seed]} ----")
 

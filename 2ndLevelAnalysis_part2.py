@@ -2,6 +2,12 @@
 # mixed models, compare them and save a new txt-file with the p-value of such
 # comparison (chi-squared of the likelihood ratio test)
 
+  # TO RUN IN CLI (CALL one seed per terminal tab)
+  # conda activate my-env 
+  # cd ~/Desktop/striatconnTRT/secondlevel/tvals/InfVentralCaudate 
+  # find . -maxdepth 1 -type f -name "*.txt" | xargs -n 1 -P 10 python ~/Desktop/GitHub_repos/Striatocortical-connectivity-FEPtrt/2ndLevelAnalysis_part2.py -c ~/Desktop/striatconnTRT/secondlevel/df_covars.csv -o ~/Desktop/striatconnTRT/secondlevel/pvals -t ~/Desktop/striatconnTRT/secondlevel/tvals -v
+
+
 # CONSIDERATIONS:
 
     # 1) The pyBIDS function to filter files based on 'invalid_filters' does not
@@ -24,20 +30,10 @@
                      # #invalid_filters="allow"
                      # )
 
-    # 2) I'm ignoring convergence warnings from MixedLM models to avoid
-    # having as many warning messages as voxels for which we are fitting models.
-    # I think it's okay to do it in this context, since we don't care about the
-    # actual output of the models, but only about which model fits best.
-
-
     # 3) For voxels where not all subjects have values from the firstlevel (voxel_t has Nan)
     # I'm skipping the model and not saving a voxel.txt file - in 3rd part assing p = nan
     
-    # TO RUN IN CLI (CALL one seed per terminal tab)
-    # conda activate my-env 
-    # cd ~/Desktop/striatconnTRT/secondlevel/tvals/InfVentralCaudate 
-    # find . -maxdepth 1 -type f -name "*.txt" | xargs -n 1 -P 10 python ~/Desktop/GitHub_repos/Striatocortical-connectivity-FEPtrt/2ndLevelAnalysis_part2.py -c ~/Desktop/striatconnTRT/secondlevel/df_covars.csv -o ~/Desktop/striatconnTRT/secondlevel/pvals -t ~/Desktop/striatconnTRT/secondlevel/tvals -v
-
+  
 #%%
 
 
@@ -88,12 +84,7 @@ def main ():
 
         voxel = "voxel_33874_DorsalCaudate.txt"
         #seedname = 'DorsalCaudate'
-        #'DCPutamen'          
-         #
-          #    'DRPutamen',
-           #   'InfVentralCaudate',
-            #  'SupVentralCaudate',
-             # 'VRPutamen' 
+       
 
     else:
         options = parse()
