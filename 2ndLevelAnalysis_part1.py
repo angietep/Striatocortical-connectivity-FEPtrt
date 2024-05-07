@@ -60,20 +60,17 @@ def parse():
 
 #%%
 def main ():
-    os.environ["ROOTDIR"] = '/Users/brainsur/'  # seth path
-    #os.environ["ROOTDIR"] = '/Users/angeles/'  # seth path
+    #os.environ["ROOTDIR"] = '/Users/brainsur/Desktop'  # seth path
+    os.environ["ROOTDIR"] = '/Volumes/TOSHIBA'  # seth path
     rootdir = os.environ["ROOTDIR"]
     if hasattr(sys, "ps1"):
         options = {}
-        workdir = os.path.join(rootdir,"Desktop/striatconnTRT")
-        #workdir = os.path.join("/Volumes/TOSHIBA/striatconnTRT")
+        workdir = os.path.join(rootdir,"striatconnTRT")
         rawdata = os.path.join(workdir,"FEPtrt_prepro") # sub-1401_ses-01_task-rest_fdpower.txt
-        #rawdata = os.path.join(workdir,"../Preprocessed","FEPtrt_bids") # sub-1401_ses-01_task-rest_fdpower.txt
         masks = os.path.join(workdir,"masks")
         firstleveldir = os.path.join(workdir,"firstlevel") #  
         
         demographic = workdir
-        #confounds = os.path.join(workdir,"derivatives","fmriprep")
         
         output  = os.path.join(workdir,"secondlevel")
         tmp  = os.path.join(output,"tvals")
@@ -83,8 +80,6 @@ def main ():
         options = parse()
         participants = options.participants
         workdir = options.workdir
-        #rawdata = options.rawdata
-        #derivat = options.derivatives
         script_path = os.path.dirname(__file__)
         masks = os.path.join(script_path,"masks")
 
@@ -119,21 +114,25 @@ def main ():
     bidslayout = bids.BIDSLayout(firstleveldir, validate = False) #With validate = True it doesn't find any subjects
     confoundslayout = bids.BIDSLayout(rawdata, validate = False) #With validate = True it doesn't find any subjects
 
+    if not os.path.exists(output):
+        os.mkdir(output)
+    if not os.path.exists(tmp):
+        os.mkdir(tmp)
+
+        
     if not participants:
         participants = bidslayout.get_subjects() #toma los del tsv y de algunos no tengo imágenes
         #participants_sub = ["sub-" + item for item in participants]
 
     for seed in range(len(seednames)):
-
-        print(f"Seed {seednames[seed]}")
-        tmap_allsubj = [] #initialize array for tmaps
-        covars = []
-        for p in participants:
-            #print(f"Subject: {p}")
-            p = p.replace("sub-", "")
-            for ses in bidslayout.get_sessions(subject=p):
-                
-                if seed == 0: #only need to do this once
+        
+        if seed == 0:
+            covars = []
+            print("READING COVARIABLES")
+            for p in participants:
+                #print(f"Subject: {p}")
+                p = p.replace("sub-", "")
+                for ses in bidslayout.get_sessions(subject=p):
                     #Load demographics and covariates
                     dem_i = demographics[demographics.ID==float(p)] #find subject
                     dem_i = dem_i.reset_index()
@@ -149,17 +148,27 @@ def main ():
                     confounds_ents["subject"] = p
                     confounds_ents["session"] = ses
                     confounds_ents["task"] = 'rest'
-                    #confounds_ents['desc'] = "confounds"
                     confounds_ents['suffix'] = "fdpower"
                     confounds_ents['extension'] = ".txt"
                     confounds = confoundslayout.get(return_type='file', **confounds_ents, invalid_filters="allow")[0]
                    
-                    # sub-1401_ses-01_task-rest_fdpower.txt
                     noiseconfounds_df = pd.read_csv(confounds, sep='\t', header=None, names=["framewise_displacement"])
                     fdmean_i = noiseconfounds_df.framewise_displacement.mean()
 
                     covars.append((p, group_i, ses, t_DIT_i, PANSSTP_i, APdose_i, age_i, sex_i, fdmean_i))
-                
+                 
+            df = pd.DataFrame(covars, columns=['ID', 'group','ses','t_DIT', 'PANSS_TP', 'APdose', 'age', 'sex', 'fdmean' ])
+            df = df.dropna()
+            df.to_csv(os.path.join(workdir,'cleansample_covars.csv'), index=False)
+
+        print("WORKING ON TMAPS")
+        print(f"Seed {seednames[seed]}")
+        tmap_allsubj = [] #initialize array for tmaps
+
+        for p in participants:
+            #print(f"Subject: {p}")
+            p = p.replace("sub-", "")
+            for ses in bidslayout.get_sessions(subject=p):
                 
                 #print(f"Session: {ses}")
                 tmap_sixseeds = bidslayout.get(subject=p,
@@ -189,25 +198,11 @@ def main ():
 
         # Stack the arrays in the list horizontally
         tmap_allsubj = np.hstack(tmap_allsubj).T #dimensions: subj x voxels_GM
-
-        outputseed = os.path.join(tmp,f'{seednames[seed]}')
-
-        if not os.path.exists(output):
-            os.mkdir(output)
-        if not os.path.exists(tmp):
-            os.mkdir(tmp)
-        if not os.path.exists(outputseed):
-            os.mkdir(outputseed)
-
-        if seed == 0:
-            df = pd.DataFrame(covars, columns=['ID', 'group','ses','t_DIT', 'PANSS_TP', 'APdose', 'age', 'sex', 'fdmean' ])
-            df = df.dropna()
-            df.to_csv(os.path.join(output,'df_covars.csv'), index=False)
-
+       
         for voxel in range(len(idx_GM)):
             voxel_data = tmap_allsubj[:, voxel]  # Extract voxel ts (t-vals for each subject)
             file_name = f'voxel_{voxel}_{seednames[seed]}.txt'
-            #You need to put these in different folders.
+            #Need to put these in different folders.
             if not os.path.exists(os.path.join(tmp,seednames[seed])):
                 os.mkdir(os.path.join(tmp,seednames[seed]))
             file_path = os.path.join(tmp,seednames[seed], file_name)

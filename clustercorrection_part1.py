@@ -48,123 +48,125 @@ def parse():
 
 #%%
 def main ():
-    os.environ["ROOTDIR"] = '/Users/brainsur/Desktop'  # seth path
-    #os.environ["ROOTDIR"] = '/Volumes/TOSHIBA'  # seth path
+    #os.environ["ROOTDIR"] = '/Users/brainsur/Desktop'  # seth path
+    os.environ["ROOTDIR"] = '/Volumes/TOSHIBA'  # seth path
     rootdir = os.environ["ROOTDIR"]
     if hasattr(sys, "ps1"):
         options = {}
         workdir = os.path.join(rootdir, "striatconnTRT")
         masks = os.path.join(workdir, "masks")
         firstleveldir = os.path.join(workdir, "firstlevel")
-
-        output = workdir
+        secondlevel = os.path.join(workdir, "secondlevel")
         participants = []
 
     else:
         options = parse()
         participants = options.participants
         workdir = options.workdir
-        # rawdata = options.rawdata
-        # derivat = options.derivatives
+        secondlevel = options.secondlevel
+
         script_path = os.path.dirname(__file__)
 
     print('firstlevel: ', firstleveldir)
-
-    #################
-    GMmask = os.path.join(masks,'GrayMattermask_thalamus_space-MNI152_dim-9110991.nii.gz')
-    # read vol
-    # Vgm_vol = Vgm_nii.get_fdata()
-    # save origianl dimensions (voxels_x, voxels_y, voxels_z)
-    # dim3d = Vgm_vol.shape
-    # reshape to 2D
-    # Vgm_2d = Vgm_vol.reshape(-1, np.prod(dim3d)).T  # -1 means auto-calculate size of dimension
-    # save indexes in which Vgm == 1 (indexes for gray matter location)
-    # idx_GM = np.where(Vgm_2d)[0]
-
-    # With validate = True it doesn't find any subjects
-    bidslayout = bids.BIDSLayout(firstleveldir, validate=False)
-    # confoundslayout = bids.BIDSLayout(rawdata, validate = False) #With validate = True it doesn't find any subjects
-
-    if not participants:
-        # toma los del tsv y de algunos no tengo imágenes
-        participants = bidslayout.get_subjects()
-        # participants_sub = ["sub-" + item for item in participants]
-
-    # Define the output DataFrame
-    output_df = pd.DataFrame(
-        columns=['subject', 'ses', 'acf_x', 'acf_y', 'acf_z'])
-
-    for p in participants:
-        # print(f"Subject: {p}")
-        p = p.replace("sub-", "")
-        for ses in bidslayout.get_sessions(subject=p):
-            # print(f"Session: {ses}")
-            residuals = bidslayout.get(subject=p,
-                                       session=ses,
-                                       extension=".nii.gz",
-                                       suffix="residuals",
-                                       space="MNI152",
-                                       # regex_search=True,
-                                       # seed="DCPutamen", #does not work
-                                       # invalid_filters="allow"
-                                       )
-            if len(residuals) < 1:
-                continue
-            print(f"Subject: {p}, Session: {ses}, Residuals: {residuals}")
-
-            #afni_command = ['3dFWHMx',
-            afni_command = ['/Users/brainsur/abin/3dFWHMx',
-                            '-mask', GMmask,
-                            '-input', residuals[0].path]
-
-            try:
-                result = subprocess.run(
-                    afni_command, check=True, capture_output=True, text=True)
-                # Print the output if needed
-                # Extract the three numbers from the result.stdout
-                values = [float(val) for val in result.stdout.split()[4:7]]
-
-                # Append the results to the DataFrame
-                # output_df = output_df.append({'subject': p,'ses': ses, 'acf_x': values[0], 'acf_y': values[1], 'acf_z': values[2]}, ignore_index=True)
-                output_df = pd.concat([output_df, pd.DataFrame({'subject': [p], 'ses': [ses], 'acf_x': [
-                                      values[0]], 'acf_y': [values[1]], 'acf_z': [values[2]]})], ignore_index=True)
-
-            except subprocess.CalledProcessError as e:
-                # Print the error if the command fails
-                print(f"Error: {e}")
-                print(f"Command output: {e.output}")
-
-    # Save the DataFrame to a CSV file
-    output_csv_path = os.path.join(output,'clustcorrection_acfparameters.csv')
-   
-    output_df.to_csv(output_csv_path, index=False)
-     
-    acf_x = output_df['acf_x'].mean()
-    acf_y = output_df['acf_y'].mean()
-    acf_z = output_df['acf_z'].mean()
-
-    #afni_command = ['3dClustSim',
-    afni_command = ['/Users/brainsur/abin/3dClustSim',
-                    '-acf', str(acf_x), str(acf_y), str(acf_z), 
-                    '-nxyz', '91','109','91', 
-                    '-dxyz', '2','2','2',
-                    '-athr', '0.05',
-                    '-pthr', '0.001']
-
-    try:
-        result = subprocess.run(
-            afni_command, check=True, capture_output=True, text=True)
-        
-        print(result.stdout)
-        # Extract the three numbers from the result.stdout
-       
-    except subprocess.CalledProcessError as e:
-        # Print the error if the command fails
-        print(f"Error: {e}")
-        print(f"Command output: {e.output}")
-
-
+    sample = pd.read_csv(os.path.join(workdir,'cleansample_covars.csv'))
+    intermediate_output = os.path.join(secondlevel,'clustcorrection_acfparameters.csv')
+    
+    
+    if not(os.path.exists(intermediate_output)):
+        print("Working on first level data to generate dataframe with 3dFWHMx results")
+        #################
+        GMmask = os.path.join(masks,'GrayMattermask_thalamus_space-MNI152_dim-9110991.nii.gz')
+ 
+        bidslayout = bids.BIDSLayout(firstleveldir, validate=False)
+    
+        if not participants:
+            participants = bidslayout.get_subjects()
+    
+        # Define the output DataFrame
+        output_df = pd.DataFrame(
+            columns=['subject', 'ses', 'acf_x', 'acf_y', 'acf_z'])
+    
+        for p in participants:
+            if int(p) in sample['ID'].values:
+                #print(f"Subject: {p}")
+                p = p.replace("sub-", "")
+                for ses in bidslayout.get_sessions(subject=p):
+                    if int(ses) in sample.ses[sample['ID']==int(p)].values:
+                        #print(f"Session: {ses}")
+                    
+                        residuals = bidslayout.get(subject=p,
+                                                   session=ses,
+                                                   extension=".nii.gz",
+                                                   suffix="residuals",
+                                                   space="MNI152",
+                                                   # regex_search=True,
+                                                   # seed="DCPutamen", #does not work
+                                                   # invalid_filters="allow"
+                                                   )
+                        if len(residuals) < 1:
+                            continue
+                        print(f"Subject: {p}, Session: {ses}, Residuals: {residuals}")
             
+                        afni_command = ['3dFWHMx',
+                        #afni_command = ['/Users/brainsur/abin/3dFWHMx',
+                                        '-mask', GMmask,
+                                        '-input', residuals[0].path]
+            
+                        try:
+                            result = subprocess.run(
+                                afni_command, check=True, capture_output=True, text=True)
+                            # Print the output if needed
+                            # Extract the three numbers from the result.stdout
+                            values = [float(val) for val in result.stdout.split()[4:7]]
+            
+                            # Append the results to the DataFrame
+                            # output_df = output_df.append({'subject': p,'ses': ses, 'acf_x': values[0], 'acf_y': values[1], 'acf_z': values[2]}, ignore_index=True)
+                            output_df = pd.concat([output_df, pd.DataFrame({'subject': [p], 'ses': [ses], 'acf_x': [
+                                                  values[0]], 'acf_y': [values[1]], 'acf_z': [values[2]]})], ignore_index=True)
+            
+                        except subprocess.CalledProcessError as e:
+                            # Print the error if the command fails
+                            print(f"Error: {e}")
+                            print(f"Command output: {e.output}")
+        
+        # Save the DataFrame to a CSV file
+       
+        output_df.to_csv(intermediate_output, index=False)
+        
+        
+    
+    else:
+        print("CSV with 3dFWHMx data found - not reading first level data")
+        output_df = pd.read_csv(intermediate_output)
+        
+        acf_x = output_df['acf_x'].mean()
+        acf_y = output_df['acf_y'].mean()
+        acf_z = output_df['acf_z'].mean()
+    
+        afni_command = ['3dClustSim',
+        #afni_command = ['/Users/brainsur/abin/3dClustSim',
+                        '-acf', str(acf_x), str(acf_y), str(acf_z), 
+                        '-nxyz', '91','109','91', 
+                        '-dxyz', '2','2','2',
+                        '-athr', '0.05',#'0.05/6', #Bonferroni corrected for 6 seeds
+                        '-pthr', '0.001']
+    
+        try:
+            result = subprocess.run(
+                afni_command, check=True, capture_output=True, text=True)
+            
+            print(result.stdout)
+            with open(os.path.join(secondlevel,'3dClustSim_output.txt'), 'w') as file:
+                file.write(result.stdout)
+    
+           
+        except subprocess.CalledProcessError as e:
+            # Print the error if the command fails
+            print(f"Error: {e}")
+            print(f"Command output: {e.output}")
+    
+    
+                
 
 #%%
 
