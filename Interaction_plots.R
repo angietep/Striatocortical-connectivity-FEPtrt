@@ -22,18 +22,21 @@ ggplot(sample, aes(x = t_DIT, y = tvals_SupVentralCaudate_interactionDITxgroup_c
 
 ggplot(sample, aes(x = t_DIT, y = tvals_SupVentralCaudate_interactionDITxgroup_cluster.1_size_2317, color = group, group = ID)) +
   geom_point() +
-  geom_line(size = 0.5, alpha = 0.5) +  # Thinner lines connecting points of the same subject
+  geom_line(size = 0.5, alpha = 0.7,linetype = "dotted") +  # Thinner lines connecting points of the same subject
   geom_smooth(method = "lm", se = FALSE, size = 2, aes(group = group)) +  # Overall trend lines for each group
-  theme_bw() 
+  theme_bw() +
+  scale_color_jama()
 
 ggplot(sample, aes(x = t_DIT, y = tvals_InfVentralCaudate_interactionDITxgroup_cluster.1_size_409, color = group, group = ID)) +
   geom_point() +
-  geom_line(size = 0.5, alpha = 0.5) +  # Thinner lines connecting points of the same subject
+  geom_line(size = 0.5, alpha = 0.7,linetype = "dotted") +  # Thinner lines connecting points of the same subject
   geom_smooth(method = "lm", se = FALSE, size = 2, aes(group = group)) +  # Overall trend lines for each group
-  theme_bw() 
+  theme_bw() +
+  scale_color_jama()
 
 ggplot(sample, aes(x = t_DIT, y = tvals_SupVentralCaudate_interactionDITxgroup_cluster.2_size_826, color = group, group = ID)) +
   geom_point() +
-  geom_line(size = 0.5, alpha = 0.5) +  # Thinner lines connecting points of the same subject
+  geom_line(size = 0.5, alpha = 0.7,linetype = "dotted") +  # Thinner lines connecting points of the same subject
   geom_smooth(method = "lm", se = FALSE, size = 2, aes(group = group)) +  # Overall trend lines for each group
-  theme_bw() 
+  theme_bw() +
+  scale_color_jama()
