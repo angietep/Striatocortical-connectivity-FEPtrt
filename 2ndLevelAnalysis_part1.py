@@ -60,8 +60,8 @@ def parse():
 
 #%%
 def main ():
-    #os.environ["ROOTDIR"] = '/Users/brainsur/Desktop'  # seth path
-    os.environ["ROOTDIR"] = '/Volumes/TOSHIBA'  # seth path
+    os.environ["ROOTDIR"] = '/Users/brainsur/Desktop'  # seth path
+    #os.environ["ROOTDIR"] = '/Volumes/TOSHIBA'  # seth path
     rootdir = os.environ["ROOTDIR"]
     if hasattr(sys, "ps1"):
         options = {}
@@ -165,35 +165,32 @@ def main ():
         print(f"Seed {seednames[seed]}")
         tmap_allsubj = [] #initialize array for tmaps
 
-        for p in participants:
-            #print(f"Subject: {p}")
+        for p in participants:          
             p = p.replace("sub-", "")
-            for ses in bidslayout.get_sessions(subject=p):
-                
-                #print(f"Session: {ses}")
-                tmap_sixseeds = bidslayout.get(subject=p,
-                                 session=ses,
-                                 extension=".nii.gz",
-                                 suffix="tstat",
-                                 space="MNI152",
-                                 #regex_search=True,
-                                 #seed="DCPutamen", #does not work
-                                 #invalid_filters="allow"
-                                 )
-                if len(tmap_sixseeds) < 1:
-                    continue
-                #print(f"Subject: {p}, Session: {ses}, Seed: {tmap_sixseeds[seed].filename.split('seed-')[1].split('_')[0]}")
-
-                #Load volume
-                tmap_bids =tmap_sixseeds[seed]
-                tmap_nii = nimg.load_img(tmap_bids)
-
-                # reshape into 2d
-                tmap_2d = tmap_nii.get_fdata().reshape(-1, np.prod(dim3d)).T
-                tmap_gm = tmap_2d[idx_GM]
-
-                tmap_allsubj.append(tmap_gm)
-                #aux_list.append((p,ses,r))
+            if p in df.ID.values:  
+                #print(f"Subject: {p}")                    
+                for ses in df.ses[df.ID==p]:                  
+                    #print(f"Session: {ses}")
+                    tmap_sixseeds = bidslayout.get(subject=p,
+                                     session=ses,
+                                     extension=".nii.gz",
+                                     suffix="tstat",
+                                     space="MNI152",
+                                     )
+                    if len(tmap_sixseeds) < 1:
+                        continue
+                    #print(f"Subject: {p}, Session: {ses}, Seed: {tmap_sixseeds[seed].filename.split('seed-')[1].split('_')[0]}")
+    
+                    #Load volume
+                    tmap_bids =tmap_sixseeds[seed]
+                    tmap_nii = nimg.load_img(tmap_bids)
+    
+                    # reshape into 2d
+                    tmap_2d = tmap_nii.get_fdata().reshape(-1, np.prod(dim3d)).T
+                    tmap_gm = tmap_2d[idx_GM]
+    
+                    tmap_allsubj.append(tmap_gm)
+                    #aux_list.append((p,ses,r))
              
 
         # Stack the arrays in the list horizontally

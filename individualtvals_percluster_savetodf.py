@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Tue May  7 16:55:13 2024
+Created on Thu May  9 12:32:02 2024
 
-@author: angeles
-
+@author: brainsur
+#%%
+# This script reads txt files with t-vals for each subject and 
+# for each voxel inside a mask 
+# of significant pvals (cluster corrected)
+# and generates a column in a df to later plot interaction plots
+# (in another script)
+  
 """
 
 #%%
@@ -15,11 +21,6 @@ import nibabel as nib
 import argparse
 import pandas as pd
 from scipy.ndimage import label
-#%%
-# This script reads txt files with beta vals for each voxel inside a mask 
-# of significant pvals (cluster corrected)
-# and generates nifti files 
-  
 
 #%%
 def parse():
@@ -37,7 +38,7 @@ def parse():
      
         options.add_argument('-o', '--output',dest="output", action='store', type=str, required=True,
                             help='path to output directory')
-        options.add_argument('-r', '--CCresults',dest="ccresults", action='store', type=str, required=True,
+        options.add_argument('-r', '--betas_path',dest="betas_path", action='store', type=str, required=True,
                             help='path to clustercorrected results')
 
         #print(options.parse_args())
@@ -71,16 +72,14 @@ def main ():
         secondlevel = os.path.join(workdir, "secondlevel")
         output = os.path.join(secondlevel, "results")
         betas_path = os.path.join(output, "betas")
-        CCresults = os.path.join(output,'clustercorrectedNN2')
         
     else :
-
         options = parse()
-        tmp = options.workdir
+        workdir = options.workdir
         masks = options.mask
         output  = options.outputs
-        CCresults = options.ccresults
-
+        betas_path = options.betas_path
+      
 
     seednames = ['DCPutamen',
                   'DorsalCaudate',
@@ -92,10 +91,11 @@ def main ():
     
     VOIs = ['interactionDITxgroup',
             'DIT',
-            'Group'
+            'Group',
             #'APdose',
             #'PANSS_TP'            
             ]
+    sample = pd.read_csv(os.path.join(workdir,'cleansample_covars.csv'))
     
     #################
     Vgm_nii = nib.load(os.path.join(masks,'GrayMattermask_thalamus_space-MNI152_dim-9110991.nii.gz'))
@@ -108,74 +108,43 @@ def main ():
     #save indexes in which Vgm == 1 (indexes for gray matter location)
     idx_GM = np.where(Vgm_2d)[0]
 
-
     # Get the list of files in the directory
-    results_files = os.listdir(CCresults)
-    if not os.path.exists(betas_path):
-        os.makedirs(betas_path)
-    
+    results_files = os.listdir(betas_path)
+       
     for res_filename in results_files:
-        result_nii = nib.load(os.path.join(CCresults,res_filename))
+        result_nii = nib.load(os.path.join(betas_path,res_filename))
         result_vol = result_nii.get_fdata()
         
         # Perform clustering using second-nearest neighbor criterion
         clusters, num_clusters = label(result_vol, structure=np.ones((3,3,3)))
-        clusters_2d= clusters.reshape(-1,np.prod(dim3d)).T
-        
-        # cluster_sizes = np.bincount(clusters.flatten())
-
-        
+        clusters_2d= clusters.reshape(-1,np.prod(dim3d)).T        
+        cluster_size = np.bincount(clusters.flatten())[1]
+    
         for seedname in seednames:
             if seedname in res_filename:
                 print(f"Seed name '{seedname}' found in file: {res_filename}")
                 for index, VOI in enumerate(VOIs, start=1):
-                    if VOI in res_filename:
+                    if VOI in res_filename.split('_'):
                         print(f"VOI {VOI} found in file: {res_filename}")
                 
-                        beta_filepath = os.path.join(secondlevel,'pvals', f'{seedname}')
-                        targetbeta = {
-                            1: "beta_interaction",
-                            2: "beta_DIT",
-                            3: "beta_Group",
-                            4: "beta_APdose",
-                            5: "beta_PANSSTP"
-                            }
-                       
-                        for i_cluster in range(num_clusters):
-                            idx_cluster = np.where(clusters_2d == i_cluster+1)[0]
-                            beta_list = []
+                        tvals_filepath = os.path.join(secondlevel,'tvals', f'{seedname}')
+                        
+                        idx_cluster = np.where(clusters_2d)[0]
+                        all_tvals = []
+                        for i in idx_cluster:
+                            voxel = np.where(idx_GM == i)[0][0]
+                            vox_filename = f'voxel_{voxel}_{seedname}.txt'
+                            df = pd.read_csv(os.path.join(tvals_filepath, vox_filename), sep='\t', header = None)
                             
-                            for i in idx_cluster:
-                                voxel = np.where(idx_GM == i)[0][0]
-                                filename = f'voxel_{voxel}_{seedname}.txt'
-                                df = pd.read_csv(os.path.join(beta_filepath, filename), sep='\t')
-                                
-                                beta = df[targetbeta[index]].values[0]
-                                
-                                beta_list.append(beta)
-
-                            betas = np.array(beta_list)
-                            
-                            beta_vol = result_vol
-                            beta_vol = beta_vol.reshape(-1, np.prod(dim3d))
-                            beta_vol[:] = 0
-                            beta_vol[0,idx_cluster] = betas[:]
-                            beta_vol = beta_vol.reshape(dim3d)
-                            
-                            beta_nii = nib.Nifti1Image(beta_vol, result_nii.affine)
-    
-                            # Save as nifti file
-    
-                            beta_filename = "longitudinalTRT_seed-" + \
-                                        seedname + \
-                                        "_space-MNI152_dim-9110991_" + \
-                                        VOI + \
-                                        "_betas_" + \
-                                        "cluster-" + str(i_cluster+1) + \
-                                        ".nii.gz"                            
-    
-                            beta_nii.to_filename(os.path.join(betas_path, beta_filename))
-
+                            all_tvals.append(df[0].values)
+                        
+                        all_tvals = np.array(all_tvals).T
+                        tval_mean = all_tvals.mean(axis=1)
+                        
+                        colname = f'tvals_{seedname}_{VOI}_{res_filename[-16:-7]}_size_{cluster_size}'
+                        sample[colname] = tval_mean
+                    
+    sample.to_csv(os.path.join(workdir,'cleansample_covars.csv'), index=False)
 
 #%%
 

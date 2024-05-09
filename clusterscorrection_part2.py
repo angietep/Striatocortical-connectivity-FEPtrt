@@ -31,8 +31,8 @@ def parse():
 #%%
 
 def main ():
-    #os.environ["ROOTDIR"] = '/Users/brainsur/Desktop'  # seth path
-    os.environ["ROOTDIR"] = '/Volumes/TOSHIBA'  # seth path  # seth path
+    os.environ["ROOTDIR"] = '/Users/brainsur/Desktop'  # seth path
+    #os.environ["ROOTDIR"] = '/Volumes/TOSHIBA'  # seth path  # seth path
     rootdir = os.environ["ROOTDIR"]
     if hasattr(sys, "ps1"):
         options = {}
