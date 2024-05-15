@@ -40,7 +40,7 @@ def main ():
     if hasattr(sys, "ps1"):
         options = {}
         workdir = os.path.join(rootdir,"striatconnTRT")
-        rawdata = os.path.join(workdir,"FEPtrt_prepro")
+        rawdata = os.path.join("/Volumes","TOSHIBA","Preprocessed","HC_bids")#(workdir,"FEPtrt_prepro")
         #derivat = os.path.join(workdir,"derivatives","fmriprep-example")
         output  = os.path.join(workdir,"firstlevel")
         masks = os.path.join(workdir,"masks")
