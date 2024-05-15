@@ -116,8 +116,8 @@ long_data$APdose_[long_data$Grupo == "HC"] <- 0
 long_data$Control[long_data$Grupo == "HC"] <- 1
 long_data$Control[long_data$Grupo != "HC"] <- 0
 
-long_data$Resistence[long_data$Grupo == "TRS"] <- 1
-long_data$Resistence[long_data$Grupo != "TRS"] <- 0
+long_data$Resistance[long_data$Grupo == "TRS"] <- 1
+long_data$Resistance[long_data$Grupo != "TRS"] <- 0
 
 
 write.csv(long_data, file = "subjects_finallist_DIT.csv", row.names = FALSE)

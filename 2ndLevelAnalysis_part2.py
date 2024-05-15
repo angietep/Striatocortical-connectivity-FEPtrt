@@ -5,7 +5,7 @@
   # TO RUN IN CLI (CALL one seed per terminal tab)
   # conda activate my-env 
   # cd ~/Desktop/striatconnTRT/secondlevel/tvals/InfVentralCaudate 
-  # find . -maxdepth 1 -type f -name "*.txt" | xargs -n 1 -P 10 python ~/Desktop/GitHub_repos/Striatocortical-connectivity-FEPtrt/2ndLevelAnalysis_part2.py -c ~/Desktop/striatconnTRT/secondlevel/df_covars.csv -o ~/Desktop/striatconnTRT/secondlevel/pvals -t ~/Desktop/striatconnTRT/secondlevel/tvals -v
+  # find . -maxdepth 1 -type f -name "*.txt" | xargs -n 1 -P 10 python ~/Desktop/GitHub_repos/Striatocortical-connectivity-FEPtrt/2ndLevelAnalysis_part2.py -c ~/Desktop/striatconnTRT/cleansample_covars.csv -o ~/Desktop/striatconnTRT/secondlevel/pvals -t ~/Desktop/striatconnTRT/secondlevel/tvals -v
 
 
 # CONSIDERATIONS:
@@ -79,7 +79,7 @@ def main ():
         options = {}
         workdir = os.path.join(rootdir, "striatconnTRT")
         tvalpath = os.path.join(workdir, "secondlevel", "tvals")
-        covariates = os.path.join(workdir, "secondlevel", "df_covars.csv")
+        covariates = os.path.join(workdir, 'cleansample_covars.csv')
         output = os.path.join(workdir, "secondlevel","pvals")
 
         voxel = "voxel_33874_DorsalCaudate.txt"
@@ -95,6 +95,7 @@ def main ():
 
       
     df = pd.read_csv(covariates, header=0)
+
    
     seedname = voxel.split("_")[-1]
     seedname = seedname.split(".")[0] 
@@ -116,32 +117,39 @@ def main ():
         
     df['voxel_t'] = voxel_t
 
-    model_formula = 'voxel_t ~ age + sex + APdose + PANSS_TP + fdmean + t_DIT+ group + t_DIT:group + (1|ID)' 
+    model_formula = 'voxel_t ~ age + sex + APdose + PANSS_TP + fdmean + HC + TRS + t_DIT + t_DIT:HC + t_DIT:TRS' 
     mixed_model = smf.mixedlm(model_formula, df, groups=df['ID'])
     result = mixed_model.fit()
+    
+    pval_HC = result.pvalues['HC']
+    beta_HC = result.params['HC']
+    
+    pval_TRS = result.pvalues["TRS"]
+    beta_TRS = result.params["TRS"]
+    
+    pval_time = result.pvalues['t_DIT']
+    beta_time = result.params['t_DIT']
 
-    pval_interaction = result.pvalues['t_DIT:group[T.nonTRT]']
-    beta_interaction = result.params['t_DIT:group[T.nonTRT]']
-    pval_DIT = result.pvalues['t_DIT']
-    beta_DIT = result.params['t_DIT']
-    pval_Group = result.pvalues['group[T.nonTRT]']
-    beta_Group = result.params['group[T.nonTRT]']
-    pval_APdose = result.pvalues['APdose']
-    beta_APdose = result.params['APdose']
-    pval_PANSS_TP = result.pvalues['PANSS_TP']
-    beta_PANSS_TP = result.params['PANSS_TP']
+    pval_timexHC = result.pvalues['t_DIT:HC']
+    beta_timexHC = result.params['t_DIT:HC']
+   
+    pval_timexTRS = result.pvalues['t_DIT:TRS']
+    beta_timexTRS = result.params['t_DIT:TRS'] 
 
     df = df.drop(columns=['voxel_t'])
 
-    filevals = [beta_interaction, pval_interaction, beta_DIT, pval_DIT, beta_Group, pval_Group,
-                beta_APdose, pval_APdose, beta_PANSS_TP, pval_PANSS_TP]
+    filevals = [beta_HC, pval_HC,
+                beta_TRS, pval_TRS,
+                beta_time, pval_time,
+                beta_timexHC, pval_timexHC,
+                beta_timexTRS, pval_timexTRS]
 
     result_path = os.path.join(output, f"{seedname}", file_name)
 
     with open(os.path.join(result_path), 'w') as file:
         # Write column headers
         file.write(
-            "beta_interaction\tpval_interaction\tbeta_DIT\tpval_DIT\tbeta_Group\tpval_Group\tbeta_APdose\tpval_APdose\tbeta_PANSSTP\tpval_PANSSTP\n")
+            "beta_HC\tpval_HC\tbeta_TRS\tpval_TRS\tbeta_time\tpval_time\tbeta_timexHC\tpval_timexHC\tbeta_timexTRS\tpval_timexTRS\n")
         # Write p-values in different columns
         for val in filevals:
             if val == filevals[-1]:

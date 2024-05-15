@@ -66,7 +66,8 @@ def main ():
     if hasattr(sys, "ps1"):
         options = {}
         workdir = os.path.join(rootdir,"striatconnTRT")
-        rawdata = os.path.join(workdir,"FEPtrt_prepro") # sub-1401_ses-01_task-rest_fdpower.txt
+        rawdata_patients = "/Volumes/TOSHIBA/Preprocessed/FEP_bids" #os.path.join(workdir,"FEPtrt_prepro") # sub-1401_ses-01_task-rest_fdpower.txt
+        rawdata_hc = "/Volumes/TOSHIBA/Preprocessed/HC_bids"
         masks = os.path.join(workdir,"masks")
         firstleveldir = os.path.join(workdir,"firstlevel") #  
         
@@ -98,7 +99,8 @@ def main ():
     demographics=pd.read_csv(os.path.join(demographic,'subjects_finallist_DIT.csv'))
     demographics['MRI_'] = pd.to_datetime(demographics['MRI_'])
     demographics['Fecha_nacimiento'] = pd.to_datetime(demographics['Fecha_nacimiento'])
-                   
+    demographics['ID'] = demographics['ID'].astype(str)
+
 
     #################
     Vgm_nii = nib.load(os.path.join(masks,'GrayMattermask_thalamus_space-MNI152_dim-9110991.nii.gz'))
@@ -112,7 +114,9 @@ def main ():
     idx_GM = np.where(Vgm_2d)[0]
 
     bidslayout = bids.BIDSLayout(firstleveldir, validate = False) #With validate = True it doesn't find any subjects
-    confoundslayout = bids.BIDSLayout(rawdata, validate = False) #With validate = True it doesn't find any subjects
+    confoundslayout_patients = bids.BIDSLayout(rawdata_patients, validate = False) #With validate = True it doesn't find any subjects
+    confoundslayout_hc = bids.BIDSLayout(rawdata_hc, validate = False) #With validate = True it doesn't find any subjects
+
 
     if not os.path.exists(output):
         os.mkdir(output)
@@ -130,16 +134,23 @@ def main ():
             covars = []
             print("READING COVARIABLES")
             for p in participants:
-                #print(f"Subject: {p}")
+                print(f"Subject: {p}")
                 p = p.replace("sub-", "")
                 for ses in bidslayout.get_sessions(subject=p):
                     #Load demographics and covariates
-                    dem_i = demographics[demographics.ID==float(p)] #find subject
+                    dem_i = demographics[demographics['ID'] == p] #find subject  
+                    
+                    if dem_i.empty:
+                        print(f"No data found for subject {p} ses-{ses}")
+                        continue
+                    
                     dem_i = dem_i.reset_index()
                     
                     sex_i = dem_i.Sexo[float(ses)-1]
                     age_i = (dem_i.MRI_[float(ses)-1]-dem_i.Fecha_nacimiento[float(ses)-1]).days // 365 #find ses
                     group_i = dem_i.Grupo[float(ses)-1]
+                    control_i = dem_i.Control[float(ses)-1]
+                    resist_i = dem_i.Resistance[float(ses)-1]
                     t_DIT_i = dem_i.t[float(ses)-1]
                     PANSSTP_i = dem_i.PANSS_TP_[float(ses)-1]
                     APdose_i = dem_i.APdose_[float(ses)-1]
@@ -150,14 +161,18 @@ def main ():
                     confounds_ents["task"] = 'rest'
                     confounds_ents['suffix'] = "fdpower"
                     confounds_ents['extension'] = ".txt"
-                    confounds = confoundslayout.get(return_type='file', **confounds_ents, invalid_filters="allow")[0]
+                    
+                    if control_i: 
+                        confounds = confoundslayout_hc.get(return_type='file', **confounds_ents, invalid_filters="allow")[0]
+                    else:
+                        confounds = confoundslayout_patients.get(return_type='file', **confounds_ents, invalid_filters="allow")[0]
                    
                     noiseconfounds_df = pd.read_csv(confounds, sep='\t', header=None, names=["framewise_displacement"])
                     fdmean_i = noiseconfounds_df.framewise_displacement.mean()
 
-                    covars.append((p, group_i, ses, t_DIT_i, PANSSTP_i, APdose_i, age_i, sex_i, fdmean_i))
+                    covars.append((p, group_i, control_i, resist_i, ses, t_DIT_i, PANSSTP_i, APdose_i, age_i, sex_i, fdmean_i))
                  
-            df = pd.DataFrame(covars, columns=['ID', 'group','ses','t_DIT', 'PANSS_TP', 'APdose', 'age', 'sex', 'fdmean' ])
+            df = pd.DataFrame(covars, columns=['ID', 'group','HC','TRS','ses','t_DIT', 'PANSS_TP', 'APdose', 'age', 'sex', 'fdmean' ])
             df = df.dropna()
             df.to_csv(os.path.join(workdir,'cleansample_covars.csv'), index=False)
 
