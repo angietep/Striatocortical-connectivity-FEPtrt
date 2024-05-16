@@ -42,7 +42,7 @@ Resist sin clz,1433,0,,Resistente,5/07/2001,Masculino,NA,,14/12/2017,360,16,23/0
 ,1441,0,,No_resistente,9/03/1994,Masculino,NA,,12/04/2018,180,12,19/07/2018,180,7,NA,NA,NA,NA,NA,NA,NA,NA,NA,"3,0",34,"98,0","7,4",
 ,1442,0,,No_resistente,8/08/1998,Masculino,NA,,19/04/2018,270,14,27/07/2018,270,8,NA,NA,NA,NA,NA,NA,NA,NA,NA,"22,0",20,"99,0","26,0",
 ,1443,1,CriteriosResistencia,NA,19/01/2002,Masculino,26/04/2018,,3/05/2018,500,11,26/07/2018,475,10,30/06/2022,NA,NA,27/07/2023,NA,NA,NA,NA,NA,"5,0",40,"1911,0","70,0",
-newdata,1444,0,,No_resistente,2/05/1999,Masculino,NA,,10/05/2018,900,17,16/08/2018,300,10,19/08/2021,0,7,3/08/2023,0,7,18/01/2024,0,7,"4,0",14,"1911,0","68,2",
+,1444,0,,No_resistente,2/05/1999,Masculino,NA,,10/05/2018,900,17,16/08/2018,300,10,19/08/2021,0,7,3/08/2023,0,7,18/01/2024,0,7,"4,0",14,"1911,0","68,2",
 ,1445,0,,No_resistente,18/12/1997,Masculino,NA,,17/05/2018,960,17,2/08/2018,870,7,9/09/2021,150,7,25/05/2023,180,7,NA,NA,NA,"3,0",23,"1834,0","64,9",APDOSE3: olanzapina5mg; APDOSE4: paliperidona75mg al mes
 ,1446,1,Afectivo,No_resistente,20/06/1995,Masculino,NA,,24/05/2018,780,13,23/08/2018,600,7,14/10/2021,NA,NA,NA,NA,NA,NA,NA,NA,"2,0",22,"1239,0","44,0",
 ,1447,0,,Resistente,19/08/1998,Masculino,21/01/2021,,31/05/2018,131,18,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"1,0",20,"0,0","1,7",
@@ -55,18 +55,18 @@ newdata,1444,0,,No_resistente,2/05/1999,Masculino,NA,,10/05/2018,900,17,16/08/20
 ,1454,0,,No_resistente,13/12/1997,Masculino,NA,,2/08/2018,600,14,23/09/2021,0,7,NA,NA,NA,NA,NA,NA,NA,NA,NA,"0,3",14,"1148,0","39,0",
 ,1455,0,,No_resistente,9/05/1997,Masculino,NA,,6/09/2018,420,10,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"0,3",34,"0,0","1,4",
 ,1456,0,,No_resistente,11/03/1981,Masculino,NA,27/06/2018,6/09/2018,180,12,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,71,"0,0",NA,
-newdata,1457,0,,No_resistente,22/06/1999,Masculino,NA,,13/09/2018,600,20,21/12/2018,600,7,14/07/2022,0,7,13/07/2023,0,7,NA,NA,NA,"6,0",15,"1764,0","65,3",
+,1457,0,,No_resistente,22/06/1999,Masculino,NA,,13/09/2018,600,20,21/12/2018,600,7,14/07/2022,0,7,13/07/2023,0,7,NA,NA,NA,"6,0",15,"1764,0","65,3",
 ,1458,0,,No_resistente,16/05/1995,Femenino,NA,,13/09/2018,180,14,21/12/2018,300,9,28/10/2021,0,7,18/08/2022,0,7,NA,NA,NA,"14,0",20,"1435,0","62,5",
 ,1459,0,,No_resistente,21/05/2002,Masculino,NA,,25/10/2018,450,22,21/03/2019,500,7,NA,NA,NA,NA,NA,NA,NA,NA,NA,"9,0",15,"147,0","14,4",
 ,1460,1,NoMRI,Resistente,NA,NA,NA,,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"0,0",NA,
 ,1461,0,,No_resistente,16/05/1997,Masculino,NA,,22/11/2018,180,13,28/02/2019,450,8,3/06/2021,300,7,20/01/2022,300,19,NA,NA,NA,"9,0",36,"1155,0","48,7",APDOSE3: aripiprazol15mg; APDOSE4: aripiprazol15mg
-,1462,1,missingdata de DX,Resistente,24/07/1993,Masculino,22/11/2018,no hay registros en horwitz,29/11/2018,25,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"0,0",NA,
+missingdata fecha DX,1462,0,,Resistente,24/07/1993,Masculino,22/11/2018,no hay registros en horwitz,29/11/2018,25,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"0,0",NA,
 ,1463,0,,Resistente,11/11/2002,Masculino,24/06/2019,,6/12/2018,510,12,28/03/2019,480,23,NA,NA,NA,NA,NA,NA,NA,NA,NA,"14,0",9,"112,0","18,0",
 ,1464,0,,No_resistente,22/11/1983,Masculino,NA,,6/12/2018,200,14,9/06/2022,90,7,NA,NA,NA,NA,NA,NA,NA,NA,NA,"12,0",9,"1281,0","55,0",APDOSE2: risperidona1.5mg
 ,1465,0,,Resistente,17/07/1999,Masculino,NA,,20/12/2018,150,18,28/03/2019,600,9,28/07/2022,700,17,NA,NA,NA,NA,NA,NA,"21,0",14,"1316,0","65,3",APDOSE3: olanzapina20mg aripiprazol5mg
-newdata,1466,0,,Resistente,23/01/1997,Femenino,4/06/2019,,3/01/2019,360,19,23/05/2019,700,15,14/07/2022,200,9,1/06/2023,200,7,NA,NA,NA,"28,0",17,"1610,0","82,2",APDOSE3: clz200mg APDOSE4: clz200mg
+,1466,0,,Resistente,23/01/1997,Femenino,4/06/2019,,3/01/2019,360,19,23/05/2019,700,15,14/07/2022,200,9,1/06/2023,200,7,NA,NA,NA,"28,0",17,"1610,0","82,2",APDOSE3: clz200mg APDOSE4: clz200mg
 ,1467,0,,No_resistente,15/05/1999,Masculino,NA,,10/01/2019,600,20,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"22,0",14,"0,0","22,5",
-Falta preprocesar,1468,1,Imagensinpreprocesar,No_resistente,16/05/2003,Masculino,NA,,17/01/2019,600,24,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"19,0",7,"0,0","19,2",
+,1468,1,MalaAdquisicion(EPIcorta),No_resistente,16/05/2003,Masculino,NA,,17/01/2019,600,24,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"19,0",7,"0,0","19,2",
 ,1469,0,,No_resistente,14/10/2000,Femenino,NA,,24/01/2019,128,17,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"1,0",12,"0,0","1,4",
 ,1470,0,,No_resistente,17/07/1999,Masculino,NA,,7/02/2019,690,20,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"24,0",19,"0,0","24,6",
 ,1471,0,,Resistente,14/10/1996,Masculino,26/02/2019,,14/02/2019,825,37,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"12,0",34,"0,0","13,1",
@@ -76,7 +76,7 @@ Falta preprocesar,1468,1,Imagensinpreprocesar,No_resistente,16/05/2003,Masculino
 ,1475,0,,No_resistente,11/11/2000,Masculino,NA,,11/04/2019,450,9,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"4,0",18,"0,0","4,6",
 ,1476,0,,No_resistente,17/07/1998,Femenino,NA,,11/04/2019,270,18,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"1,0",27,"0,0","1,9",
 ,1477,1,NoMRI,Resistente,20/10/1999,NA,28/05/2019,,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"0,0",NA,
-newdata,1478,0,,Resistente,4/02/1996,Masculino,13/06/2019,,25/04/2019,270,15,27/10/2022,960,7,29/06/2023,960,7,NA,NA,NA,NA,NA,NA,"10,0",0,"1526,0","60,9",APDOSE2: olanzapina20mg risperidona6mg; APDOSE3: olanzapina20mg risperidona6mg
+,1478,0,,Resistente,4/02/1996,Masculino,13/06/2019,,25/04/2019,270,15,27/10/2022,960,7,29/06/2023,960,7,NA,NA,NA,NA,NA,NA,"10,0",0,"1526,0","60,9",APDOSE2: olanzapina20mg risperidona6mg; APDOSE3: olanzapina20mg risperidona6mg
 ,1479,0,,Resistente,23/04/2001,Femenino,30/05/2019,,16/05/2019,1500,25,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"11,0",45,"0,0","12,5",
 ,1480,0,,No_resistente,14/07/1995,Masculino,NA,,30/05/2019,360,18,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"11,0",18,"0,0","11,6",
 ,1481,0,,No_resistente,15/04/2001,Masculino,NA,,30/05/2019,600,11,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"11,0",12,"0,0","11,4",
@@ -85,11 +85,11 @@ newdata,1478,0,,Resistente,4/02/1996,Masculino,13/06/2019,,25/04/2019,270,15,27/
 ,1484,0,,No_resistente,18/08/2001,Femenino,NA,,20/06/2019,500,18,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"1,0",29,"0,0","2,0",
 ,1485,0,,Resistente,27/02/2004,Masculino,7/10/2019,,20/06/2019,400,10,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"40,8",23,"0,0","41,6",
 ,1486,0,,Resistente,22/11/2000,Femenino,20/08/2019,4/05/2019,27/06/2019,600,NA,2/12/2021,0,7,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,54,"889,0",NA,APDOSE1: olanzapina20mg
-newdata,1487,0,,No_resistente,22/07/1998,Femenino,NA,13/06/2019,27/06/2019,450,23,23/12/2021,337,7,15/06/2023,337,7,NA,NA,NA,NA,NA,NA,"0,5",14,"1449,0","49,3",APDOSE2: haloperidol5mg aripiprazol7.5mg; APDOSE3: haloperidol5mg aripiprazol7.5mg
+,1487,0,,No_resistente,22/07/1998,Femenino,NA,13/06/2019,27/06/2019,450,23,23/12/2021,337,7,15/06/2023,337,7,NA,NA,NA,NA,NA,NA,"0,5",14,"1449,0","49,3",APDOSE2: haloperidol5mg aripiprazol7.5mg; APDOSE3: haloperidol5mg aripiprazol7.5mg
 ,1488,0,,No_resistente,13/02/1998,Masculino,NA,7/06/2019,4/07/2019,750,17,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"4,0",27,"0,0","4,9",
-Falta preprocesar 2 y sess3,1489,0,,No_resistente,29/04/2000,Masculino,NA,,4/07/2019,300,22,30/12/2021,900,9,1/06/2023,1100,10,1/02/2024,1100,7,NA,NA,NA,"27,0",23,"1673,0","83,5",APDOSE2: olanzapina30mg; APDOSE3: olanzapina30mg aripiprazol10mg; APDOSE4: olanzapina30mg aripiprazol10mg
+,1489,0,,No_resistente,29/04/2000,Masculino,NA,,4/07/2019,300,22,30/12/2021,900,9,1/06/2023,1100,10,1/02/2024,1100,7,NA,NA,NA,"27,0",23,"1673,0","83,5",APDOSE2: olanzapina30mg; APDOSE3: olanzapina30mg aripiprazol10mg; APDOSE4: olanzapina30mg aripiprazol10mg
 ,1490,0,,No_resistente,14/12/1998,Masculino,NA,,11/07/2019,780,12,23/12/2021,600,7,29/09/2022,600,7,NA,NA,NA,NA,NA,NA,"27,4",33,"1176,0","67,7",APDOSE2: olanzapina20mg; APDOSE3: olanzapina20mg
-newdata,1491,0,,No_resistente,26/03/2000,Masculino,NA,,18/07/2019,1170,15,7/07/2022,960,15,8/06/2023,1140,11,NA,NA,NA,NA,NA,NA,"5,5",29,"1421,0","53,8",APDOSE2: olanzapina20mg risperidona6mg; APDOSE3: risperidona9mg olanzapina20mg
+,1491,0,,No_resistente,26/03/2000,Masculino,NA,,18/07/2019,1170,15,7/07/2022,960,15,8/06/2023,1140,11,NA,NA,NA,NA,NA,NA,"5,5",29,"1421,0","53,8",APDOSE2: olanzapina20mg risperidona6mg; APDOSE3: risperidona9mg olanzapina20mg
 ,1492,1,Afectivo,No_resistente,25/08/1996,Femenino,NA,,1/08/2019,270,17,4/08/2022,NA,NA,16/03/2023,NA,NA,NA,NA,NA,NA,NA,NA,"2,6",18,"1323,0","47,3",
 ,1493,0,,No_resistente,24/10/1998,Masculino,NA,,8/08/2019,690,16,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"7,7",19,"0,0","8,3",
 ,1494,1,ProblemasNormalizationMRI,Resistente,2/09/2000,Masculino,6/08/2019,,29/08/2019,445,12,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"18,7",35,"0,0","19,9",
@@ -98,7 +98,7 @@ newdata,1491,0,,No_resistente,26/03/2000,Masculino,NA,,18/07/2019,1170,15,7/07/2
 ,1497,0,,No_resistente,26/09/1997,Masculino,NA,3/09/2019,12/09/2019,500,16,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,9,"0,0",NA,
 ,1498,1,missingdata de DX,No_resistente,3/10/2003,Masculino,NA,no hay registros,26/09/2019,270,13,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"36,0",NA,"0,0",NA,
 ,1499,1,NoMRI,No_resistente,3/05/2001,Masculino,NA,,3/10/2019,480,7,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"0,3",66,"0,0","2,5",
-newdata,1500,0,,No_resistente,24/03/2001,Femenino,NA,,3/10/2019,263,9,2/02/2023,350,12,5/10/2023,350,10,NA,NA,NA,NA,NA,NA,"51,0",24,"1463,0","100,6",APDOSE2: aripiprazol10mg quetiapina200mg; APDOSE3: aripiprazol10mg quetiapina200mg
+,1500,0,,No_resistente,24/03/2001,Femenino,NA,,3/10/2019,263,9,2/02/2023,350,12,5/10/2023,350,10,NA,NA,NA,NA,NA,NA,"51,0",24,"1463,0","100,6",APDOSE2: aripiprazol10mg quetiapina200mg; APDOSE3: aripiprazol10mg quetiapina200mg
 ,1501,0,,Resistente,13/06/2000,Masculino,23/05/2022,,10/10/2019,800,10,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"5,9",46,"0,0","7,4",
 ,1502,0,,No_resistente,15/08/2002,Masculino,NA,,17/10/2019,700,20,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"22,0",49,"0,0","23,6",
 ,1503,0,,Resistente,24/09/1999,Femenino,29/10/2019,26/08/2019,17/10/2019,1000,NA,9/02/2023,50,8,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,52,"1211,0",NA,APDOSE1: olanzapina20mg aripiprazol 20mg; APDOSE2: clz50mg
@@ -106,7 +106,7 @@ newdata,1500,0,,No_resistente,24/03/2001,Femenino,NA,,3/10/2019,263,9,2/02/2023,
 ,1505,0,,Resistente,13/11/2000,Masculino,15/11/2019,,28/11/2019,125,11,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"32,9",64,"0,0","35,0",
 ,1506,0,,Resistente,30/01/2002,Femenino,16/01/2020,,28/11/2019,300,16,23/02/2023,0,40,NA,NA,NA,NA,NA,NA,NA,NA,NA,"1,0",58,"1183,0","42,4",
 cuadernillos clínicos sess1 perdidos,1507,0,,No_resistente,02/12/2001,Femenino,NA,18/10/2019,5/12/2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,48,"0,0",NA,
-newdata; cuadernillos clínicos sess1 perdidos,1508,0,,Resistente,28/07/2001,Masculino,25/11/2022,16/11/2019,5/12/2019,570,28,9/03/2023,100,11,21/03/2024,0,7,NA,NA,NA,NA,NA,NA,"6,4",19,"1568,0","59,3",APDOSE2: clz100mg
+cuadernillos clínicos sess1 perdidos,1508,0,,Resistente,28/07/2001,Masculino,25/11/2022,16/11/2019,5/12/2019,570,28,9/03/2023,100,11,21/03/2024,0,7,NA,NA,NA,NA,NA,NA,"6,4",19,"1568,0","59,3",APDOSE2: clz100mg
 ,1509,0,,No_resistente,23/12/1998,Masculino,NA,09/11/2019,12/12/2019,NA,NA,23/03/2023,0,7,18/01/2024,0,8,NA,NA,NA,NA,NA,NA,NA,33,"1498,0",NA,
 cuadernillos clínicos sess1 perdidos,1510,0,,Resistente,08/12/1999,Masculino,13/12/2019,8/11/2019,26/12/2019,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,48,"0,0",NA,
 cuadernillos clínicos sess1 perdidos,1511,0,,Resistente,06/10/1997,Femenino,17/12/2019,22/11/2019,16/01/2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,55,"0,0",NA,
@@ -116,7 +116,7 @@ cuadernillos clínicos sess1 perdidos,1511,0,,Resistente,06/10/1997,Femenino,17/
 cuadernillos clínicos sess1 perdidos,1515,0,,No_resistente,27/01/2003,Femenino,NA,14/01/2020,13/02/2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,30,"0,0",NA,
 cuadernillos clínicos sess1 perdidos,1516,0,,No_resistente,01/02/2000,Masculino,NA,22/01/2020,20/02/2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,29,"0,0",NA,
 ,1517,1,Afectivo,No_resistente,NA,NA,NA,,12/03/2020,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"0,0",NA,
-newdata,1600,0,,Resistente,11/11/1998,Masculino,NA,09/06/2021,15/07/2021,270,17,31/03/2022,180,13,19/10/2023,200,15,NA,NA,NA,NA,NA,NA,NA,36,"826,0",NA,APDOSE1: risperidona 4.5mg; APDOSE2:  3mg risperidona; APDOSE3:clz200mg
+,1600,0,,Resistente,11/11/1998,Masculino,NA,09/06/2021,15/07/2021,270,17,31/03/2022,180,13,19/10/2023,200,15,NA,NA,NA,NA,NA,NA,NA,36,"826,0",NA,APDOSE1: risperidona 4.5mg; APDOSE2:  3mg risperidona; APDOSE3:clz200mg
 ,1601,0,,No_resistente,18/01/2000,Masculino,NA,05/10/2021,14/10/2021,90,21,6/10/2022,0,21,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,9,"357,0",NA,APDOSE1: risperidona 1.5mg
 ,1602,1,NoesPEP,No_resistente,20/02/1992,Masculino,NA,01/06/2016,21/10/2021,NA,NA,4/08/2022,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"287,0",NA,
 ,1603,1,NoMRI,NA,NA,Femenino,NA,,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"0,0",NA,
@@ -220,8 +220,8 @@ Preguntar a Camila si empezó clz,1605,0,,NA,11/06/2001,Masculino,NA,20/05/2022,
 ,C101,0,,HC,20/01/2003,Masculino,NA,NA,8/07/2021,NA,NA,28/04/2022,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,
 ,C102,0,,HC,03/06/1995,Femenino,NA,NA,8/07/2021,NA,NA,21/07/2022,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,
 ,C103,0,,HC,29/03/1996,Masculino,NA,NA,12/08/2021,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,
-,C104,0,No se hicieron las evalclin,HC,22/01/1975,Femenino,NA,NA,19/08/2021,NA,NA,17/02/2022,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,
-,C105,0,,HC,31/08/1966,Femenino,NA,NA,2/09/2021,NA,NA,5/05/2022,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,
+,C104,1,>45 años. No se hicieron las evalclin,HC,22/01/1975,Femenino,NA,NA,19/08/2021,NA,NA,17/02/2022,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,
+,C105,1,>45 años,HC,31/08/1966,Femenino,NA,NA,2/09/2021,NA,NA,5/05/2022,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,
 ,C106,0,,HC,06/10/1986,Masculino,NA,NA,16/09/2021,NA,NA,7/07/2022,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,
 ,C107,0,Missing evalclin2 (revisar si está el cuadernillo físico sin escanear),HC,28/02/1987,Masculino,NA,NA,7/10/2021,NA,NA,30/06/2022,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,
 ,C108,0,,HC,05/08/2001,Masculino,NA,NA,14/10/2021,NA,NA,5/05/2022,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,

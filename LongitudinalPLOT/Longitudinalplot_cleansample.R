@@ -8,29 +8,37 @@ setwd("/Users/brainsur/Desktop/GitHub_repos/Striatocortical-connectivity-FEPtrt/
 
 library(tidyverse)
 library(dplyr)
+library(hrbrthemes)
 
 # PREPARE DATA ####
 ## Import data ####  
 df<-read.csv("cleansample_covars.csv")
+df <- df[df$ID != 'C104', ] 
+df <- df[df$ID != 'C105', ] 
 
 # PLOT 1a: DURATION IN TREATMENT####
 
-# Separate by groups (nonTRT and TRT)
-nonTRT_data <- filter(df, group == "nonTRT")
-TRT_data <- filter(df, group == "TRT")
+# Separate by groups (nonTRS and TRS)
+nonTRS_data <- filter(df, group == "nonTRS")
+TRS_data <- filter(df, group == "TRS")
+HC_data <- filter(df, group == "HC")
 
 # Then, reorder IDs based on the highest value of t_DIT for each subject
-nonTRT_data <- nonTRT_data %>%
+nonTRS_data <- nonTRS_data %>%
   arrange(desc(t_DIT)) %>%
   ungroup()
 
-TRT_data <- TRT_data %>%
+TRS_data <- TRS_data %>%
   arrange(desc(t_DIT)) %>%
   ungroup()
+
+HC_data <- HC_data %>%
+  arrange(desc(t_DIT)) %>%
+  ungroup()
+
 
 # Combine the separated and reordered data back together
-organized_df <- rbind(nonTRT_data, TRT_data)
-
+organized_df <- rbind(TRS_data,nonTRS_data, HC_data)
 organized_df$plotID<-as.numeric(row.names(organized_df))
 
 # Convert ID to character and reorder based on plotID
@@ -48,7 +56,7 @@ ggplot(organized_df, aes(x = t_DIT)) +
   geom_point(aes(y=ID, color = as.factor(group),shape = factor(ses)), size=2) +
   labs(x = "Duration of treatment (months)", y = "Subject ID", color = "Group", shape= "Session") +
   theme(legend.position = "top", axis.text.y = element_text(size = 5)) +
-  geom_density(aes(y = -..density..*1000), fill= "#69b3a2") +
+  geom_density(aes(y = -..density..*500), fill= "#69b3a2") +
   geom_label(aes(x=75, y=-10, label="density")) + 
   scale_x_continuous(breaks = c(specific_ticks, 0, 25, 50, 75, 100),
                      labels = c(specific_labels, 0, 25, 50, 75, 100)) +
@@ -59,4 +67,14 @@ ggplot(organized_df, aes(x = t_DIT)) +
   geom_text(aes(x=12*7, y=-20, label="7y"), size=3)
 
 
+ggplot(df, aes(x = age, fill = group)) +
+  geom_histogram(position = "identity", alpha = 0.5, bins = 30) +
+  labs(x = "Age", y = "Frequency")
+
+
+ggplot(df, aes(x=age, fill=group)) +
+  geom_histogram( color="#e9ecef", alpha=0.6, position = 'identity') +
+  scale_fill_manual(values=c("red","#69b3a2", "#404080")) +
+  theme_ipsum() +
+  labs(fill="")                               
 

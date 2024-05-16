@@ -11,6 +11,7 @@ library(tidyverse)
 # PREPARE DATA ####
 ## Import data ####  
 sample<-read.csv("subjects_May2024.csv")
+
 #keep only columns and rows of interest
 df <- sample[, c("ID", "Grupo","Fecha_nacimiento","Sexo", 
                  "MRI_1","MRI_2","MRI_3","MRI_4", "MRI_5",
@@ -81,15 +82,12 @@ sapply(df, class)
 
 
 ## Exclude and remove NA ####
-#PATIENTS
+
 df <- df[!df$Excluir==1,]
 
 df <- df[!is.na(df$Fecha_nacimiento), ] #excluded 0
 df <- df[!is.na(df$Sexo), ] #excluded 0
-df <- df[!is.na(df$Grupo), ] #excluded 2
-
-#esta es la opción de incluirlos haciendo cero los NA
-#df$DUP.months.[is.na(df$DUP.months.)] <- 0  
+df <- df[!is.na(df$Grupo), ] #excluded 2 (1604 y 1605)
 
 
 # PLOT 1a: DURATION IN TREATMENT####
@@ -110,7 +108,7 @@ long_data <- pivot_longer(df,
                           names_to = c(".value", "session"),
                           names_pattern = "(\\D+)(\\d+)")
 
-long_data$PANSS_TP_[long_data$Grupo == "HC"] <- 0
+long_data$PANSS_TP_[long_data$Grupo == "HC"] <- 7 #min score
 long_data$APdose_[long_data$Grupo == "HC"] <- 0
 
 long_data$Control[long_data$Grupo == "HC"] <- 1
