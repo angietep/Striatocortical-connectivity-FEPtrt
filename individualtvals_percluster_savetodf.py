@@ -89,12 +89,13 @@ def main ():
                   'VRPutamen' #_space-MNI152NLin2009cAsym.nii.gz
                   ]
     
-    VOIs = ['interactionDITxgroup',
-            'DIT',
-            'Group',
-            #'APdose',
-            #'PANSS_TP'            
-            ]
+    VOIs = ['HC',
+           'TRS',
+           'time',
+           'timexHC',
+           'timexTRS'            
+           ]
+    
     sample = pd.read_csv(os.path.join(workdir,'cleansample_covars.csv'))
     
     #################
@@ -112,6 +113,9 @@ def main ():
     results_files = os.listdir(betas_path)
        
     for res_filename in results_files:
+        if res_filename.startswith('.'):
+            continue
+   
         result_nii = nib.load(os.path.join(betas_path,res_filename))
         result_vol = result_nii.get_fdata()
         
@@ -125,7 +129,7 @@ def main ():
                 print(f"Seed name '{seedname}' found in file: {res_filename}")
                 for index, VOI in enumerate(VOIs, start=1):
                     if VOI in res_filename.split('_'):
-                        print(f"VOI {VOI} found in file: {res_filename}")
+                        print(f"VOI {VOI} found in file: {res_filename}\n")
                 
                         tvals_filepath = os.path.join(secondlevel,'tvals', f'{seedname}')
                         
@@ -144,7 +148,7 @@ def main ():
                         colname = f'tvals_{seedname}_{VOI}_{res_filename[-16:-7]}_size_{cluster_size}'
                         sample[colname] = tval_mean
                     
-    sample.to_csv(os.path.join(workdir,'cleansample_covars.csv'), index=False)
+    sample.to_csv(os.path.join(workdir,'tvals_cleansample_covars.csv'), index=False)
 
 #%%
 

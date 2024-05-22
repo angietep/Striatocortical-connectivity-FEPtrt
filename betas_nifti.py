@@ -15,6 +15,7 @@ import nibabel as nib
 import argparse
 import pandas as pd
 from scipy.ndimage import label
+
 #%%
 # This script reads txt files with beta vals for each voxel inside a mask 
 # of significant pvals (cluster corrected)
@@ -90,11 +91,11 @@ def main ():
                   'VRPutamen' #_space-MNI152NLin2009cAsym.nii.gz
                   ]
     
-    VOIs = ['interactionDITxgroup',
-            'DIT',
-            'Group'
-            #'APdose',
-            #'PANSS_TP'            
+    VOIs = ['HC',
+            'TRS',
+            'time',
+            'timexHC',
+            'timexTRS'            
             ]
     
     #################
@@ -129,16 +130,16 @@ def main ():
             if seedname in res_filename:
                 print(f"Seed name '{seedname}' found in file: {res_filename}")
                 for index, VOI in enumerate(VOIs, start=1):
-                    if VOI in res_filename:
-                        print(f"VOI {VOI} found in file: {res_filename}")
+                    if VOI in res_filename.split('_'):
+                        print(f"VOI {VOI} found in file: {res_filename} \n")
                 
                         beta_filepath = os.path.join(secondlevel,'pvals', f'{seedname}')
                         targetbeta = {
-                            1: "beta_interaction",
-                            2: "beta_DIT",
-                            3: "beta_Group",
-                            4: "beta_APdose",
-                            5: "beta_PANSSTP"
+                            1: "beta_HC",
+                            2: "beta_TRS",
+                            3: "beta_time",
+                            4: "beta_timexHC",
+                            5: "beta_timexTRS"
                             }
                        
                         for i_cluster in range(num_clusters):

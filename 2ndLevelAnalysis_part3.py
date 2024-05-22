@@ -36,7 +36,7 @@ def main ():
         workdir = os.path.join(rootdir,"Desktop/striatconnTRT")
         masks = os.path.join(workdir,"masks")
         tmp = os.path.join(workdir, "secondlevel")
-        output = os.path.join(tmp, "results")
+        output = os.path.join(tmp, "results","uncorrected")
         
         
     else :
@@ -85,11 +85,11 @@ def main ():
         #os.remove(compressed_folder)
         pval_filepath = os.path.join(tmp,'pvals', f'{seednames[seed]}')
 
-        pval_interaction_list=[]
-        pval_DIT_list=[]
-        pval_Group_list=[]
-        pval_APdose_list = []
-        pval_PANSS_TP_list = []
+        pval_HC_list=[]
+        pval_TRS_list=[]
+        pval_time_list=[]
+        pval_timexHC_list = []
+        pval_timexTRS_list = []
         
         for voxel in range(len(idx_GM)):
             #print(f"Voxel {voxel} out of {len(idx_GM)} for seed {seed}: {seednames[seed]}")
@@ -97,79 +97,79 @@ def main ():
             filename = f'voxel_{voxel}_{seednames[seed]}.txt'
             #If file does not exist. (i.e.: model did not converge) - replace with nans
             if not os.path.isfile(os.path.join(pval_filepath, filename)):
-                pval_interaction = np.nan
-                pval_DIT = np.nan
-                pval_Group = np.nan
-                pval_APdose = np.nan
-                pval_PANSS_TP = np.nan
+                pval_HC = np.nan
+                pval_TRS = np.nan
+                pval_time = np.nan
+                pval_timexHC = np.nan
+                pval_timexTRS = np.nan
                 
             # Read the text file into a DataFrame
             else:
                 df = pd.read_csv(os.path.join(pval_filepath, filename), sep='\t')
-
+                
                 # Access the p-values from the DataFrame
-                pval_interaction = df["pval_interaction"].values[0]
-                pval_DIT = df["pval_DIT"].values[0]
-                pval_Group = df["pval_Group"].values[0]
-                pval_APdose = df["pval_APdose"].values[0]
-                pval_PANSS_TP = df["pval_PANSSTP"].values[0]
+                pval_HC = df["pval_HC"].values[0]
+                pval_TRS = df["pval_TRS"].values[0]
+                pval_time = df["pval_time"].values[0]
+                pval_timexHC = df["pval_timexHC"].values[0]
+                pval_timexTRS = df["pval_timexTRS"].values[0]
 
-            pval_interaction_list.append(pval_interaction)
-            pval_DIT_list.append(pval_DIT)
-            pval_Group_list.append(pval_Group)
-            pval_APdose_list.append(pval_APdose)
-            pval_PANSS_TP_list.append(pval_PANSS_TP)
+            pval_HC_list.append(pval_HC)
+            pval_TRS_list.append(pval_TRS)
+            pval_time_list.append(pval_time)
+            pval_timexHC_list.append(pval_timexHC)
+            pval_timexTRS_list.append(pval_timexTRS)
 
         # Convert p-values to a NumPy array and invert (1-pval)
-        pvalues_interaction = np.array(pval_interaction_list)
-        inv_pvals_interaction = 1 - pvalues_interaction
+        pvalues_HC = np.array(pval_HC_list)
+        inv_pvals_HC = 1 - pvalues_HC
 
-        pvalues_DIT = np.array(pval_DIT_list)
-        inv_pvals_DIT = 1 - pvalues_DIT
+        pvalues_TRS = np.array(pval_TRS_list)
+        inv_pvals_TRS = 1 - pvalues_TRS
 
-        pvalues_Group = np.array(pval_Group_list)
-        inv_pvals_Group = 1 - pvalues_Group
+        pvalues_time = np.array(pval_time_list)
+        inv_pvals_time = 1 - pvalues_time
         
-        pvalues_APdose = np.array(pval_APdose_list) 
-        inv_pvals_APdose = 1 - pvalues_APdose
+        pvalues_timexHC = np.array(pval_timexHC_list) 
+        inv_pvals_timexHC = 1 - pvalues_timexHC
         
-        pvalues_PANSS_TP = np.array(pval_PANSS_TP_list)
-        inv_pvals_PANSS_TP = 1 - pvalues_PANSS_TP
+        pvalues_timexTRS = np.array(pval_timexTRS_list)
+        inv_pvals_timexTRS = 1 - pvalues_timexTRS
 
         #Generate nifti files for SEED p-values using brainmask affine info
-        #INTERACTION PVAL
+        #HC PVAL
         seedmap_vol1 = Vgm_vol #Vgm_vol = Vgm_nii.get_fdata()
         seedmap_vol1 = seedmap_vol1.reshape(-1, np.prod(dim3d)) #reshape to 2D
         seedmap_vol1[:] = 0 # clean img
-        seedmap_vol1[0,idx_GM] = inv_pvals_interaction[:]
+        seedmap_vol1[0,idx_GM] = inv_pvals_HC[:]
         seedmap_vol1 = seedmap_vol1.reshape(dim3d) #reshape to 3D
 
-        # DIT PVAL
+        # TRS PVAL
         seedmap_vol2 = Vgm_vol #Vgm_vol = Vgm_nii.get_fdata()
         seedmap_vol2 = seedmap_vol2.reshape(-1, np.prod(dim3d)) #reshape to 2D
         seedmap_vol2[:] = 0 # clean img
-        seedmap_vol2[0,idx_GM] = inv_pvals_DIT[:]
+        seedmap_vol2[0,idx_GM] = inv_pvals_TRS[:]
         seedmap_vol2 = seedmap_vol2.reshape(dim3d) #reshape to 3D
 
-        # Group PVAL
+        # Group time
         seedmap_vol3 = Vgm_vol #Vgm_vol = Vgm_nii.get_fdata()
         seedmap_vol3 = seedmap_vol3.reshape(-1, np.prod(dim3d)) #reshape to 2D
         seedmap_vol3[:] = 0 # clean img
-        seedmap_vol3[0,idx_GM] = inv_pvals_Group[:]
+        seedmap_vol3[0,idx_GM] = inv_pvals_time[:]
         seedmap_vol3 = seedmap_vol3.reshape(dim3d) #reshape to 3D
 
-        # Group APdose
+        # Group timexHC
         seedmap_vol4 = Vgm_vol #Vgm_vol = Vgm_nii.get_fdata()
         seedmap_vol4 = seedmap_vol4.reshape(-1, np.prod(dim3d)) #reshape to 2D
         seedmap_vol4[:] = 0 # clean img
-        seedmap_vol4[0,idx_GM] = inv_pvals_APdose[:]
+        seedmap_vol4[0,idx_GM] = inv_pvals_timexHC[:]
         seedmap_vol4 = seedmap_vol4.reshape(dim3d) #reshape to 3D
 
-        # Group PANSS_TP
+        # Group timexTRS
         seedmap_vol5 = Vgm_vol #Vgm_vol = Vgm_nii.get_fdata()
         seedmap_vol5 = seedmap_vol5.reshape(-1, np.prod(dim3d)) #reshape to 2D
         seedmap_vol5[:] = 0 # clean img
-        seedmap_vol5[0,idx_GM] = inv_pvals_PANSS_TP[:]
+        seedmap_vol5[0,idx_GM] = inv_pvals_timexTRS[:]
         seedmap_vol5 = seedmap_vol5.reshape(dim3d) #reshape to 3D
 
 
@@ -185,27 +185,27 @@ def main ():
         filename1 = "longitudinalTRT_seed-" + \
                     seednames[seed] + \
                     "_space-MNI152_dim-9110991" + \
-                    "_interactionDITxgroup_1-pvals-uncorrected.nii.gz"
+                    "_HC_1-pvals-uncorrected.nii.gz"
         
         filename2 = "longitudinalTRT_seed-" + \
                     seednames[seed] + \
                     "_space-MNI152_dim-9110991" + \
-                    "_DIT_1-pvals-uncorrected.nii.gz"
+                    "_TRS_1-pvals-uncorrected.nii.gz"
 
         filename3 = "longitudinalTRT_seed-" + \
                     seednames[seed] + \
                     "_space-MNI152_dim-9110991" + \
-                    "_Group_1-pvals-uncorrected.nii.gz"
+                    "_time_1-pvals-uncorrected.nii.gz"
 
         filename4 = "longitudinalTRT_seed-" + \
                     seednames[seed] + \
                     "_space-MNI152_dim-9110991" + \
-                    "_APdose_1-pvals-uncorrected.nii.gz"
+                    "_timexHC_1-pvals-uncorrected.nii.gz"
 
         filename5 = "longitudinalTRT_seed-" + \
                     seednames[seed] + \
                     "_space-MNI152_dim-9110991" + \
-                    "_PANSS_TP_1-pvals-uncorrected.nii.gz"
+                    "_timexTRS_1-pvals-uncorrected.nii.gz"
                       
 
         if not os.path.exists(output):

@@ -38,8 +38,8 @@ def main ():
         options = {}
         workdir = os.path.join(rootdir,"striatconnTRT")
         tmp = os.path.join(workdir, "secondlevel")
-        output = os.path.join(tmp, "results")
-        cluster_thr = 363 #FROM 3DCLUSTSIZE (OUTPUT OF CLUSTERCORRECTION_PART1.PY)
+        output = os.path.join(tmp, "results","uncorrected")
+        cluster_thr = 376 #FROM 3DCLUSTSIZE (OUTPUT OF CLUSTERCORRECTION_PART1.PY)
         
         
     else :
@@ -65,11 +65,11 @@ def main ():
         for _ in range(5):
             # Dictionary mapping filenames to numbers
             filenames = {
-                  1: "longitudinalTRT_seed-" + seednames[seed] + "_space-MNI152_dim-9110991_interactionDITxgroup_1-pvals-uncorrected.nii.gz",
-                  2: "longitudinalTRT_seed-" + seednames[seed] + "_space-MNI152_dim-9110991_DIT_1-pvals-uncorrected.nii.gz",
-                  3: "longitudinalTRT_seed-" + seednames[seed] + "_space-MNI152_dim-9110991_Group_1-pvals-uncorrected.nii.gz",
-                  4: "longitudinalTRT_seed-" + seednames[seed] + "_space-MNI152_dim-9110991_APdose_1-pvals-uncorrected.nii.gz",
-                  5: "longitudinalTRT_seed-" + seednames[seed] + "_space-MNI152_dim-9110991_PANSS_TP_1-pvals-uncorrected.nii.gz"
+                  1: "longitudinalTRT_seed-" + seednames[seed] + "_space-MNI152_dim-9110991_HC_1-pvals-uncorrected.nii.gz",
+                  2: "longitudinalTRT_seed-" + seednames[seed] + "_space-MNI152_dim-9110991_TRS_1-pvals-uncorrected.nii.gz",
+                  3: "longitudinalTRT_seed-" + seednames[seed] + "_space-MNI152_dim-9110991_time_1-pvals-uncorrected.nii.gz",
+                  4: "longitudinalTRT_seed-" + seednames[seed] + "_space-MNI152_dim-9110991_timexHC_1-pvals-uncorrected.nii.gz",
+                  5: "longitudinalTRT_seed-" + seednames[seed] + "_space-MNI152_dim-9110991_timexTRS_1-pvals-uncorrected.nii.gz"
             }
         
             # Choose filename based on loop iteration
@@ -107,8 +107,8 @@ def main ():
             # Create a new image with only clusters > 364 and their corresponding inverse p-values
             new_data = np.zeros_like(data)
             
-            if not os.path.exists(os.path.join(output,'clustercorrectedNN2')):
-                os.makedirs(os.path.join(output,'clustercorrectedNN2'))
+            if not os.path.exists(os.path.join(output,'../clustercorrectedNN2')):
+                os.makedirs(os.path.join(output,'../clustercorrectedNN2'))
 
             for idx in large_clusters_indices:
                 if idx == 0:
@@ -120,7 +120,7 @@ def main ():
                 new_nii_img = nib.Nifti1Image(new_data, affine=nii_img.affine, header=nii_img.header)     
            
                 # Save the new NIfTI image
-                nib.save(new_nii_img, os.path.join(output,'clustercorrectedNN2',filename))
+                nib.save(new_nii_img, os.path.join(output,'../clustercorrectedNN2',filename))
                 
             
 #%%

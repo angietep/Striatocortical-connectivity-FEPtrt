@@ -73,7 +73,7 @@ def main ():
     
     
     if not(os.path.exists(intermediate_output)):
-        print("Working on first level data to generate dataframe with 3dFWHMx results")
+        print("Working on first level data to generate dataframe with 3dFWHMx results- RUN AGAIN WHEN FINISHED")
         #################
         GMmask = os.path.join(masks,'GrayMattermask_thalamus_space-MNI152_dim-9110991.nii.gz')
  
@@ -87,11 +87,11 @@ def main ():
             columns=['subject', 'ses', 'acf_x', 'acf_y', 'acf_z'])
     
         for p in participants:
-            if int(p) in sample['ID'].values:
+            if p in sample['ID'].values:
                 #print(f"Subject: {p}")
                 p = p.replace("sub-", "")
                 for ses in bidslayout.get_sessions(subject=p):
-                    if int(ses) in sample.ses[sample['ID']==int(p)].values:
+                    if int(ses) in sample.ses[sample['ID']==p].values:
                         #print(f"Session: {ses}")
                     
                         residuals = bidslayout.get(subject=p,
