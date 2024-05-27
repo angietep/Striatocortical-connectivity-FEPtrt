@@ -3,12 +3,13 @@
 
 # Set environment ####
 rm(list= ls())# ctrl + L to clear console
-#setwd("~/Documents/GitHub/Striatocortical-connectivity-FEPtrt/LongitudinalPLOT/")
-setwd("/Users/brainsur/Desktop/GitHub_repos/Striatocortical-connectivity-FEPtrt/LongitudinalPLOT")
+setwd("~/Documents/GitHub/Striatocortical-connectivity-FEPtrt/LongitudinalPLOT/")
+#setwd("/Users/brainsur/Desktop/GitHub_repos/Striatocortical-connectivity-FEPtrt/LongitudinalPLOT")
 
 library(tidyverse)
 library(dplyr)
 library(hrbrthemes)
+#library(ggplot2)
 
 # PREPARE DATA ####
 ## Import data ####  
@@ -54,7 +55,7 @@ specific_labels <- c("","","","","")
 ggplot(organized_df, aes(x = t_DIT)) +
   geom_line(aes(y=ID, group = ID ), size = .3) +
   geom_point(aes(y=ID, color = as.factor(group),shape = factor(ses)), size=2) +
-  labs(x = "Duration of treatment (months)", y = "Subject ID", color = "Group", shape= "Session") +
+  labs(x = "Months", y = "Subject ID", color = "Group", shape= "Session") +
   theme(legend.position = "top", axis.text.y = element_text(size = 5)) +
   geom_density(aes(y = -..density..*500), fill= "#69b3a2") +
   geom_label(aes(x=75, y=-10, label="density")) + 
