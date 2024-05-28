@@ -17,6 +17,18 @@ df<-read.csv("cleansample_covars.csv")
 df <- df[df$ID != 'C104', ] 
 df <- df[df$ID != 'C105', ] 
 
+df_first_occurrence <- df %>%
+  distinct(ID, .keep_all = TRUE)
+
+#find sess != 1 
+# find those IDs in subjects_finallist and compute age as MRI - Fecha_NAC
+# then mean and sd of age
+
+df_long <- read.csv("subjects_finallist_DIT.csv")
+df_long <- df_long %>% drop_na(t)
+
+df_baseline_nonTRS <- df_long %>% filter(t == 0) %>% filter (Grupo == "nonTRS")
+df_baseline <- df_baseline %>% drop_na(MRI_)
 
 # LEER DATOS DE LA OTRA TABLA (SUBJECTS_DIT)
 # Y CALCULAR EDADES Y SEXO INCLUYENDO A 1474 Y 1509 QUE NO TIENE APDOSE PARA SES 1

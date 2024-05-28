@@ -3,8 +3,8 @@
 
 # Set environment ####
 rm(list= ls())# ctrl + L to clear console
-#setwd("~/Documents/GitHub/Striatocortical-connectivity-FEPtrt/LongitudinalPLOT/")
-setwd("/Users/brainsur/Desktop/striatconnTRT")
+setwd("~/Documents/GitHub/Striatocortical-connectivity-FEPtrt/LongitudinalPLOT/")
+#setwd("/Users/brainsur/Desktop/striatconnTRT")
 library(ggplot2)
 library(geomtextpath)
 library(ggsci)
