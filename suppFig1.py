@@ -1,36 +1,19 @@
-# SECOND LEVEL PART 2: This script reads txt files for each voxel, compute
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Tue May 28 16:24:09 2024
+
+@author: brainsur
+"""
+
+# This script reads txt files for each voxel and compute
 # mixed model
 
   # TO RUN IN CLI (CALL one seed per terminal tab)
   # conda activate my-env 
   # cd ~/Desktop/striatconnTRT/secondlevel/tvals/InfVentralCaudate 
-  # find . -maxdepth 1 -type f -name "*.txt" | xargs -n 1 -P 10 python ~/Desktop/GitHub_repos/Striatocortical-connectivity-FEPtrt/2ndLevelAnalysis_part2.py -c ~/Desktop/striatconnTRT/cleansample_covars.csv -o ~/Desktop/striatconnTRT/secondlevel/pvals -t ~/Desktop/striatconnTRT/secondlevel/tvals -v
+  # find . -maxdepth 1 -type f -name "*.txt" | xargs -n 1 -P 10 python ~/Desktop/GitHub_repos/Striatocortical-connectivity-FEPtrt/suppFig1.py -c ~/Desktop/striatconnTRT/cleansample_covars.csv -o ~/Desktop/striatconnTRT/secondlevel/pvals_suppFig1 -t ~/Desktop/striatconnTRT/secondlevel/tvals -v
 
-
-# CONSIDERATIONS:
-
-    # 1) The pyBIDS function to filter files based on 'invalid_filters' does not
-    # work for me. Because of that, I cannot (easily) select the seed-file based
-    # on file name. I'm exclusively relying on the order of the files being the
-    # same for all subjects, i.e. seed=0 is DCPutamen because alphabetically it
-    # is the same file, and it *should* be first for all subjects.
-    # This is not the safest approach but it is fast. (I've checked it works for
-    # a subset of 10 subjects)
-    #
-    # Example of the bids filter function which doesn't work:
-    # bidslayout.get(subject=p,
-                     # session=ses,
-                     # run=r,
-                     # extension=".nii.gz",
-                     # suffix="tstat",
-                     # space="MNI152NLin2009cAsym",
-                     # #regex_search=True,
-                     # # seed="DCPutamen", #does not work
-                     # #invalid_filters="allow"
-                     # )
-
-    # 3) For voxels where not all subjects have values from the firstlevel (voxel_t has Nan)
-    # I'm skipping the model and not saving a voxel.txt file - in 3rd part assing p = nan
     
   
 #%%
@@ -79,7 +62,7 @@ def main ():
         workdir = os.path.join(rootdir, "striatconnTRT")
         tvalpath = os.path.join(workdir, "secondlevel", "tvals")
         covariates = os.path.join(workdir, 'cleansample_covars.csv')
-        output = os.path.join(workdir, "secondlevel","pvals")
+        output = os.path.join(workdir, "secondlevel","pvals_suppFig1")
 
         voxel = "voxel_33874_DorsalCaudate.txt"
         #seedname = 'DorsalCaudate'
@@ -116,39 +99,23 @@ def main ():
         
     df['voxel_t'] = voxel_t
 
-    model_formula = 'voxel_t ~ age + sex + APdose + PANSS_TP + fdmean + HC + TRS + t_DIT + t_DIT:HC + t_DIT:TRS' 
+    model_formula = 'voxel_t ~ age + sex ' 
     mixed_model = smf.mixedlm(model_formula, df, groups=df['ID'])
     result = mixed_model.fit()
     
-    pval_HC = result.pvalues['HC']
-    beta_HC = result.params['HC']
-    
-    pval_TRS = result.pvalues["TRS"]
-    beta_TRS = result.params["TRS"]
-    
-    pval_time = result.pvalues['t_DIT']
-    beta_time = result.params['t_DIT']
-
-    pval_timexHC = result.pvalues['t_DIT:HC']
-    beta_timexHC = result.params['t_DIT:HC']
+    pval = result.pvalues['Intercept']
+    beta = result.params['Intercept']
    
-    pval_timexTRS = result.pvalues['t_DIT:TRS']
-    beta_timexTRS = result.params['t_DIT:TRS'] 
-
     df = df.drop(columns=['voxel_t'])
 
-    filevals = [beta_HC, pval_HC,
-                beta_TRS, pval_TRS,
-                beta_time, pval_time,
-                beta_timexHC, pval_timexHC,
-                beta_timexTRS, pval_timexTRS]
+    filevals = [beta, pval]
 
     result_path = os.path.join(output, f"{seedname}", file_name)
 
     with open(os.path.join(result_path), 'w') as file:
         # Write column headers
         file.write(
-            "beta_HC\tpval_HC\tbeta_TRS\tpval_TRS\tbeta_time\tpval_time\tbeta_timexHC\tpval_timexHC\tbeta_timexTRS\tpval_timexTRS\n")
+            "beta_intercept\tpval_intercept\n")
         # Write p-values in different columns
         for val in filevals:
             if val == filevals[-1]:
@@ -163,6 +130,8 @@ def main ():
 
 if __name__ == '__main__':
     main()
+
+
 
 
 
