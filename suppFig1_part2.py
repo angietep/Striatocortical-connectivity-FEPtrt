@@ -44,7 +44,7 @@ def main ():
         workdir = os.path.join(rootdir,"Desktop/striatconnTRT")
         masks = os.path.join(workdir,"masks")
         tmp = os.path.join(workdir, "secondlevel")
-        output = os.path.join(tmp, "results")
+        output = os.path.join(tmp, "results","suppFig1")
         
         
     else :
@@ -103,7 +103,7 @@ def main ():
             #If file does not exist. (i.e.: model did not converge) - replace with nans
             if not os.path.isfile(os.path.join(pval_filepath, filename)):
                 pval = np.nan
-                beta = np.nan
+                beta = 0
                 
             # Read the text file into a DataFrame
             else:
@@ -111,9 +111,9 @@ def main ():
                 
                 # Access the p-values from the DataFrame
                 pval = df["pval_intercept"].values[0]
-                if pval < 0.01:
+                if pval < 0.05:
                     beta = df["beta_intercept"].values[0]
-                else: beta = np.nan
+                else: beta = 0
                 
             #pval_list.append(pval)
             beta_list.append(beta)
