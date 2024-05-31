@@ -13,9 +13,7 @@ library(hrbrthemes)
 
 # PREPARE DATA ####
 ## Import data ####  
-df<-read.csv("cleansample_covars.csv")
-df <- df[df$ID != 'C104', ] 
-df <- df[df$ID != 'C105', ] 
+df<-read.csv("tvals_cleansample_covars.csv")
 
 # PLOT 1a: DURATION IN TREATMENT####
 
@@ -49,33 +47,44 @@ organized_df <- organized_df %>%
   arrange(group, plotID) %>%
   mutate(ID = factor(ID, levels = rev(unique(ID)))) ## REMOVE REV TO HAVE THE INVERSE ORDER
 
-specific_ticks <- c(12, 12*2, 12*4, 12*6, 12*7)
-specific_labels <- c("","","","","")
+
 ## Plot ####
+
+# Define the color palette manually or use another color palette function
+color_palette <- c("#F8766D", "#00BFC4", "#7CAE00")  # Example colors, you can replace them with your preferred colors
+
 ggplot(organized_df, aes(x = t_DIT)) +
-  geom_line(aes(y=ID, group = ID ), size = .3) +
-  geom_point(aes(y=ID, color = as.factor(group),shape = factor(ses)), size=2) +
-  labs(x = "Months", y = "Subject ID", color = "Group", shape= "Session") +
-  theme(legend.position = "top", axis.text.y = element_text(size = 5)) +
-  geom_density(aes(y = -..density..*500), fill= "#69b3a2") +
-  geom_label(aes(x=75, y=-10, label="density")) + 
-  scale_x_continuous(breaks = c(specific_ticks, 0, 25, 50, 75, 100),
-                     labels = c(specific_labels, 0, 25, 50, 75, 100)) +
-  geom_text(aes(x=12, y=-20, label="1y"), size=3) +
-  geom_text(aes(x=12*2, y=-20, label="2y"), size=3) +
-  geom_text(aes(x=12*4, y=-20, label="4y"), size=3) +
-  geom_text(aes(x=12*6, y=-20, label="6y"), size=3) +
-  geom_text(aes(x=12*7, y=-20, label="7y"), size=3)
+  geom_line(aes(y = ID, group = ID), size = 0.5) +
+  geom_point(aes(y = ID, color = as.factor(group), shape = factor(ses)), size = 3) +
+  labs(x = "Months", y = "Subjects", color = "Group", shape = "Session") +
+  scale_color_manual(name = "Group", 
+                     values = color_palette,  # Change legend labels for color
+                     labels = c("HC", "NTR", "TR")) +  # Set legend labels
+  theme(
+    legend.position = "top",  # Put legend inside figure (top-right corner)
+    axis.text.y = element_blank(),  # Remove y-axis tick labels
+    axis.ticks.y = element_blank(),  # Remove y-axis ticks
+    legend.text = element_text(size = 16),  # Legend text size and style
+    axis.title = element_text(size = 16, face = "bold"),  # Axis title size and style
+    axis.text = element_text(size = 14),  # Axis tick labels size
+    legend.title = element_text(size = 18, face = "bold")  # Legend title size and style
+  )
+
 
 
 ggplot(df, aes(x = age, fill = group)) +
-  geom_histogram(position = "identity", alpha = 0.5, bins = 30) +
-  labs(x = "Age", y = "Frequency")
+  geom_histogram(position = "identity", alpha = 0.7, bins = 30) +  # Increase transparency for better visibility
+  scale_fill_manual(values = color_palette, guide = "none") +  # Remove legend
+  labs(x = "Age", y = "Frequency") +
+  facet_wrap(~ group, ncol = 1) +  # Display each group in a separate facet
+  theme(
+    axis.title = element_text(size = 16, face = "bold"),  # Axis title size and style
+    axis.text = element_text(size = 14),  # Axis tick labels size
+    strip.background = element_blank(),  # Remove facet labels background
+    strip.text = element_blank()  # Remove facet labels
+  )
 
 
-ggplot(df, aes(x=age, fill=group)) +
-  geom_histogram( color="#e9ecef", alpha=0.6, position = 'identity') +
-  scale_fill_manual(values=c("red","#69b3a2", "#404080")) +
-  theme_ipsum() +
-  labs(fill="")                               
+
+                           
 

@@ -13,20 +13,42 @@ library(dplyr)
 ## Import data ####  
 sample<-read.csv("tvals_cleansample_covars.csv")
 
+sample_PEP <- sample %>% filter(group!="HC")
 ## Interaction PLOTS ####
-ggplot(sample, aes(x = t_DIT, y = tvals_SupVentralCaudate_timexTRS_cluster.1_size_721, color = group, group = ID)) +
-  geom_point() +
-  geom_line(size = 0.5, alpha = 0.7,linetype = "dotted") +  # Thinner lines connecting points of the same subject
+ggplot(sample_PEP, aes(x = t_DIT, y = tvals_SupVentralCaudate_timexTRS_cluster.1_size_721, color = group, group = ID)) +
+  geom_point(size = 3) +
+  geom_line(size = 0.7, alpha = 0.7,linetype = "dotted") +  # Thinner lines connecting points of the same subject
   geom_smooth(method = "lm", se = FALSE, size = 2, aes(group = group)) +  # Overall trend lines for each group
   theme_bw() +
-  scale_color_jama()
+  scale_color_jama(labels = c("NTR", "TR")) +  # Change legend labels
+  labs(
+    x = "Time between sessions (months)",  # Replace with your desired x-axis label
+    y = "Cluster's t-value"   # Replace with your desired y-axis label
+  ) +
+  theme(
+    axis.title = element_text(size = 26, face = "bold"),  # Axis titles
+    axis.text = element_text(size = 24, face = "bold"),   # Axis tick labels
+    legend.title = element_blank(),  # Remove legend title
+    legend.text = element_text(size = 24, face = "bold")  # Legend text
+  )
 
-ggplot(sample, aes(x = t_DIT, y = tvals_SupVentralCaudate_timexTRS_cluster.2_size_536, color = group, group = ID)) +
-  geom_point() +
-  geom_line(size = 0.5, alpha = 0.7,linetype = "dotted") +  # Thinner lines connecting points of the same subject
+ggplot(sample_PEP, aes(x = t_DIT, y = tvals_SupVentralCaudate_timexTRS_cluster.2_size_536, color = group, group = ID)) +
+  geom_point(size = 3) +
+  geom_line(size = 0.7, alpha = 0.7,linetype = "dotted") +  # Thinner lines connecting points of the same subject
   geom_smooth(method = "lm", se = FALSE, size = 2, aes(group = group)) +  # Overall trend lines for each group
   theme_bw() +
-  scale_color_jama()
+  scale_color_jama(labels = c("NTR", "TR")) +  # Change legend labels
+  labs(
+    x = "Time between sessions (months)",  # Replace with your desired x-axis label
+    y = "Cluster's t-value"   # Replace with your desired y-axis label
+  ) +
+  theme(
+    axis.title = element_text(size = 26, face = "bold"),  # Axis titles
+    axis.text = element_text(size = 24, face = "bold"),   # Axis tick labels
+    legend.title = element_blank(),  # Remove legend title
+    legend.text = element_text(size = 24, face = "bold")  # Legend text
+  )
+
 
 
 
