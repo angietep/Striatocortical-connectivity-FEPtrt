@@ -9,6 +9,9 @@ library(ggplot2)
 library(geomtextpath)
 library(ggsci)
 library(dplyr)
+library(tidyverse)
+library(hrbrthemes)
+library(viridis)
 # PREPARE DATA ####
 ## Import data ####  
 sample<-read.csv("tvals_cleansample_covars.csv")
@@ -51,9 +54,64 @@ ggplot(sample_PEP, aes(x = t_DIT, y = tvals_SupVentralCaudate_timexTRS_cluster.2
 
 
 
+ggplot(sample_PEP, aes(x = t_DIT, y = tvals_DorsalCaudate_TRS_cluster.1_size_385, color = group, group = ID)) +
+  geom_point(size = 3) +
+  geom_line(size = 0.7, alpha = 0.7,linetype = "dotted") +  # Thinner lines connecting points of the same subject
+  geom_smooth(method = "lm", se = FALSE, size = 2, aes(group = group)) +  # Overall trend lines for each group
+  theme_bw() +
+  scale_color_jama(labels = c("NTR", "TR")) +  # Change legend labels
+  labs(
+    x = "Time between sessions (months)",  # Replace with your desired x-axis label
+    y = "Cluster's t-value"   # Replace with your desired y-axis label
+  ) +
+  theme(
+    axis.title = element_text(size = 26, face = "bold"),  # Axis titles
+    axis.text = element_text(size = 24, face = "bold"),   # Axis tick labels
+    legend.title = element_blank(),  # Remove legend title
+    legend.text = element_text(size = 24, face = "bold")  # Legend text
+  )
 
+boxplot(tvals_DorsalCaudate_TRS_cluster.1_size_385 ~ group, 
+        data = sample_PEP, 
+        main = "DC-ACC", 
+        ylab = "t-vals", 
+        xlab = "Group", 
+        col = "blue")
 
+boxplot(tvals_DorsalCaudate_TRS_cluster.1_size_385 ~ group, 
+        data = sample_PEP[sample_PEP$ses==1,], 
+        main = "1st episode DC-ACC connectivity", 
+        ylab = "t-vals", 
+        xlab = "Group", 
+        col = "lightblue",
+        names = c("NTR", "TR"))
 
+sample_PEP %>%
+  ggplot( aes(x=group, y=tvals_DorsalCaudate_TRS_cluster.1_size_385, fill=group)) +
+  geom_boxplot() +
+  scale_fill_viridis(discrete = TRUE, alpha=0.6) +
+  geom_jitter(color="black", size=0.4, alpha=0.9) +
+  theme_bw() +
+  theme(
+    legend.position="none",
+    plot.title = element_text(size=11)
+  ) +
+  ggtitle("A boxplot with jitter") +
+  xlab("")
+
+# Violin basic
+sample_PEP %>%
+  ggplot( aes(x=group, y=tvals_DorsalCaudate_TRS_cluster.1_size_385, fill=group)) +
+  geom_violin() +
+  scale_fill_viridis(discrete = TRUE, alpha=0.6, option="A") +
+  geom_jitter(color="black", size=0.4, alpha=0.9) +
+  theme_ipsum() +
+  theme(
+    legend.position="none",
+    plot.title = element_text(size=11)
+  ) +
+  ggtitle("Violin chart") +
+  xlab("")
 
 
 ## Demographics and statistics ####
