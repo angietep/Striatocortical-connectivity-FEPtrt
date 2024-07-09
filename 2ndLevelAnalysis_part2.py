@@ -134,6 +134,12 @@ def main ():
    
     pval_timexTRS = result.pvalues['t_DIT:TRS']
     beta_timexTRS = result.params['t_DIT:TRS'] 
+    
+    pval_APdose = result.pvalues['APdose']
+    beta_APdose = result.params['APdose']
+    
+    pval_PANSSTP = result.pvalues['PANSS_TP']
+    beta_PANSSTP = result.params['PANSS_TP']
 
     df = df.drop(columns=['voxel_t'])
 
@@ -141,14 +147,16 @@ def main ():
                 beta_TRS, pval_TRS,
                 beta_time, pval_time,
                 beta_timexHC, pval_timexHC,
-                beta_timexTRS, pval_timexTRS]
+                beta_timexTRS, pval_timexTRS,
+                beta_APdose, pval_APdose,
+                beta_PANSSTP,pval_PANSSTP]
 
     result_path = os.path.join(output, f"{seedname}", file_name)
 
     with open(os.path.join(result_path), 'w') as file:
         # Write column headers
         file.write(
-            "beta_HC\tpval_HC\tbeta_TRS\tpval_TRS\tbeta_time\tpval_time\tbeta_timexHC\tpval_timexHC\tbeta_timexTRS\tpval_timexTRS\n")
+            "beta_HC\tpval_HC\tbeta_TRS\tpval_TRS\tbeta_time\tpval_time\tbeta_timexHC\tpval_timexHC\tbeta_timexTRS\tpval_timexTRS\tbeta_APdose\tpval_APdose\tbeta_PANSSTP\tpval_PANSSTP\n")
         # Write p-values in different columns
         for val in filevals:
             if val == filevals[-1]:
