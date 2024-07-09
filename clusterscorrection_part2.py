@@ -69,7 +69,9 @@ def main ():
                   2: "longitudinalTRT_seed-" + seednames[seed] + "_space-MNI152_dim-9110991_TRS_1-pvals-uncorrected.nii.gz",
                   3: "longitudinalTRT_seed-" + seednames[seed] + "_space-MNI152_dim-9110991_time_1-pvals-uncorrected.nii.gz",
                   4: "longitudinalTRT_seed-" + seednames[seed] + "_space-MNI152_dim-9110991_timexHC_1-pvals-uncorrected.nii.gz",
-                  5: "longitudinalTRT_seed-" + seednames[seed] + "_space-MNI152_dim-9110991_timexTRS_1-pvals-uncorrected.nii.gz"
+                  5: "longitudinalTRT_seed-" + seednames[seed] + "_space-MNI152_dim-9110991_timexTRS_1-pvals-uncorrected.nii.gz",
+                  6: "longitudinalTRT_seed-" + seednames[seed] + "_space-MNI152_dim-9110991_APdose_1-pvals-uncorrected.nii.gz",
+                  7: "longitudinalTRT_seed-" + seednames[seed] + "_space-MNI152_dim-9110991_PANSSTP_1-pvals-uncorrected.nii.gz"
             }
         
             # Choose filename based on loop iteration

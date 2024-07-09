@@ -95,7 +95,9 @@ def main ():
             'TRS',
             'time',
             'timexHC',
-            'timexTRS'            
+            'timexTRS',
+            'APdose',
+            'PANSSTP'
             ]
     
     #################
@@ -139,7 +141,9 @@ def main ():
                             2: "beta_TRS",
                             3: "beta_time",
                             4: "beta_timexHC",
-                            5: "beta_timexTRS"
+                            5: "beta_timexTRS",
+                            6: "beta_APdose",
+                            7: "beta_PANSSTP"
                             }
                        
                         for i_cluster in range(num_clusters):
