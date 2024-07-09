@@ -16,6 +16,9 @@ library(car)
 library(lme4)
 library(lmerTest)
 library(rcompanion)
+library(geomtextpath)
+library(ggsci)
+
 
 # PREPARE DATA ####
 ## Import data ####  
@@ -168,9 +171,32 @@ print(PANSS_TP_stats)
 # APdose ####
 
 #Fit the linear mixed model
-model <- lmer(APdose_ ~ Resistance + (1 | ID), data = df_PANSS)
+model <- lmer(APdose_ ~ Resistance + t + t*Resistance + (1 | ID), data = df_PANSS)
 # Display the summary of the model
 summary(model)
+
+## Interaction PLOTS ####
+ggplot(df_PANSS, aes(x = t, y = APdose_, color = Grupo, group = ID)) +
+  geom_point(size = 3) +
+  geom_line(size = 0.7, alpha = 0.7,linetype = "dotted") +  # Thinner lines connecting points of the same subject
+  geom_smooth(method = "lm", se = FALSE, size = 2, aes(group = Grupo)) +  # Overall trend lines for each group
+  theme_bw() +
+  scale_color_jama(labels = c("NTR", "TR")) +  # Change legend labels
+  labs(
+    x = "Time between sessions (months)",  # Replace with your desired x-axis label
+    y = "APdose CPZ"   # Replace with your desired y-axis label
+  ) +
+  theme(
+    axis.title = element_text(size = 26, face = "bold"),  # Axis titles
+    axis.text = element_text(size = 24, face = "bold"),   # Axis tick labels
+    legend.title = element_blank(),  # Remove legend title
+    legend.text = element_text(size = 24, face = "bold")  # Legend text
+  )
+
+
+
+model2 <- lmer(APdose_ ~ Resistance + (1 | ID), data = df_PANSS)
+summary(model2)
 # Compute mean and standard deviation of PANSS_TP by group
 APdose_stats <- df_PANSS %>%
   group_by(Grupo) %>%
