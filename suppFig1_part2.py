@@ -144,7 +144,7 @@ def main ():
         filename1 = "longitudinalTRT_seed-" + \
                     seednames[seed] + \
                     "_space-MNI152_dim-9110991" + \
-                    "_suppFig1_betas-for-pvalsunder001-uncorrected.nii.gz"
+                    "_suppFig1_betas-for-pvalsunder05-uncorrected.nii.gz"
    
 
         if not os.path.exists(output):

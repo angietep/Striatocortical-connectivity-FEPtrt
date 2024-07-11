@@ -69,7 +69,7 @@ def main ():
 
     print('firstlevel: ', firstleveldir)
     sample = pd.read_csv(os.path.join(workdir,'cleansample_covars.csv'))
-    intermediate_output = os.path.join(secondlevel,'clustcorrection_acfparameters.csv')
+    intermediate_output = os.path.join(secondlevel,'clustcorrection_acfparameters_p01.csv')
     
     
     if not(os.path.exists(intermediate_output)):
@@ -149,14 +149,14 @@ def main ():
                         '-nxyz', '91','109','91', 
                         '-dxyz', '2','2','2',
                         '-athr', '0.05',#'0.05/6', #Bonferroni corrected for 6 seeds
-                        '-pthr', '0.001']
+                        '-pthr', '0.01']
     
         try:
             result = subprocess.run(
                 afni_command, check=True, capture_output=True, text=True)
             
             print(result.stdout)
-            with open(os.path.join(secondlevel,'3dClustSim_output.txt'), 'w') as file:
+            with open(os.path.join(secondlevel,'3dClustSim_output_p01.txt'), 'w') as file:
                 file.write(result.stdout)
     
            

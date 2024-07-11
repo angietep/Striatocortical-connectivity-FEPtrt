@@ -62,7 +62,7 @@ def main ():
   
     for seed in range(len(seednames)):
         
-        for _ in range(5):
+        for _ in range(7):
             # Dictionary mapping filenames to numbers
             filenames = {
                   1: "longitudinalTRT_seed-" + seednames[seed] + "_space-MNI152_dim-9110991_HC_1-pvals-uncorrected.nii.gz",
@@ -105,6 +105,7 @@ def main ():
             # Find clusters with 364 or more voxels
             cluster_sizes = np.bincount(clusters.flatten())
             large_clusters_indices = np.where(cluster_sizes >= cluster_thr)[0]
+            #print(cluster_sizes)
 
             # Create a new image with only clusters > 364 and their corresponding inverse p-values
             new_data = np.zeros_like(data)

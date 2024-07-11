@@ -1,5 +1,13 @@
-# SECOND LEVEL PART 3: This script reads txt-files with p-values of each voxel,
-# and generates nifti files with 1-pval on each voxel of the gm mask.
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Jul 11 14:55:48 2024
+
+@author: brainsur
+"""
+
+# This script reads txt-files with p-values of each voxel,
+# and generates nifti file with 1-pval on each voxel of the gm mask.
 
 #%%
 
@@ -26,7 +34,8 @@ def parse():
 
         return options.parse_args()
 
-#%% MAIN 
+#%%
+
 def main():
     os.environ["ROOTDIR"] = '/Users/brainsur/'  # seth path
     # os.environ["ROOTDIR"] = '/Users/angeles/'  # seth path
@@ -36,7 +45,7 @@ def main():
         workdir = os.path.join(rootdir, "Desktop/striatconnTRT")
         masks = os.path.join(workdir, "masks")
         tmp = os.path.join(workdir, "secondlevel")
-        output = os.path.join(tmp, "results", "uncorrected")
+        output = os.path.join(tmp, "results", "supp_uncorrected")
     else:
         options = parse()
         tmp = options.workdir
@@ -59,41 +68,41 @@ def main():
     idx_GM = np.where(Vgm_2d)[0]
 
     variables = [
-        ("HC", "pval_HC"), 
-        ("TRS", "pval_TRS"), 
-        ("time", "pval_time"), 
-        ("timexHC", "pval_timexHC"), 
-        ("timexTRS", "pval_timexTRS"), 
-        ("APdose", "pval_APdose"), 
-        ("PANSSTP", "pval_PANSSTP")
+        ("APdose", "pval_APdose", "beta_APdose"), 
+        ("PANSSTP", "pval_PANSSTP", "beta_PANSSTP")
     ]
 
     for seed in range(len(seednames)):
         print(f"\t ----- Working on seed {seed}: {seednames[seed]} ----")
         pval_filepath = os.path.join(tmp, 'pvals', f'{seednames[seed]}')
 
-        pval_lists = {name: [] for name, _ in variables}
+        pval_lists = {name: [] for name, _ , _ in variables}
+        beta_lists = {name: [] for name, _ , _ in variables}
 
         for voxel in range(len(idx_GM)):
             filename = f'voxel_{voxel}_{seednames[seed]}.txt'
             if not os.path.isfile(os.path.join(pval_filepath, filename)):
-                for name, _ in variables:
+                for name, _ , _ in variables:
                     pval_lists[name].append(np.nan)
+                    beta_lists[name].append(0)
             else:
                 df = pd.read_csv(os.path.join(pval_filepath, filename), sep='\t')
-                for name, column in variables:
-                    pval_lists[name].append(df[column].values[0])
+                for name, columnp , columnb in variables:
+                    pval_lists[name].append(df[columnp].values[0])
+                    if df[columnp].values[0] < 0.05:
+                        beta_lists[name].append(df[columnb].values[0])
+                    else: beta_lists[name].append(0)
 
-        inv_pvals = {name: 1 - np.array(pval_list) for name, pval_list in pval_lists.items()}
+        #inv_pvals = {name: 1 - np.array(pval_list) for name, pval_list in pval_lists.items()}
 
-        for i, (name, _) in enumerate(variables):
+        for i, (name, _ , _) in enumerate(variables):
             seedmap_vol = Vgm_vol.reshape(-1, np.prod(dim3d))
             seedmap_vol[:] = 0
-            seedmap_vol[0, idx_GM] = inv_pvals[name][:]
+            seedmap_vol[0, idx_GM] = np.array(beta_lists[name][:])
             seedmap_vol = seedmap_vol.reshape(dim3d)
 
             seedmap_nii = nib.Nifti1Image(seedmap_vol, Vgm_nii.affine)
-            filename = f"longitudinalTRT_seed-{seednames[seed]}_space-MNI152_dim-9110991_{name}_1-pvals-uncorrected.nii.gz"
+            filename = f"longitudinalTRT_seed-{seednames[seed]}_space-MNI152_dim-9110991_{name}_betas-for-uncorrected-pvals-under05.nii.gz"
 
             if not os.path.exists(output):
                 os.makedirs(output)
@@ -101,6 +110,7 @@ def main():
             seedmap_nii.to_filename(os.path.join(output, filename))
 
         print(f"\t ----- Finished seed {seed}: {seednames[seed]} ----")
+
 
 #%%
 
