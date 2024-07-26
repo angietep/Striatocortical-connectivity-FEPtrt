@@ -149,7 +149,7 @@ def main ():
                         '-nxyz', '91','109','91', 
                         '-dxyz', '2','2','2',
                         '-athr', '0.05',#'0.05/6', #Bonferroni corrected for 6 seeds
-                        '-pthr', '0.01']
+                        '-pthr', '0.01'] #0.001
     
         try:
             result = subprocess.run(
