@@ -40,6 +40,7 @@ import os, sys
 import statsmodels.formula.api as smf
 import argparse
 import pandas as pd
+import numpy as np
 
 import warnings
 from statsmodels.tools.sm_exceptions import ConvergenceWarning
@@ -141,29 +142,56 @@ def main ():
     pval_PANSSTP = result.pvalues['PANSS_TP']
     beta_PANSSTP = result.params['PANSS_TP']
 
+    # CONTRAST 1: Baseline TRS - HC
+    param_names = result.params.index.tolist()
+    contrast_baseline = np.zeros(len(param_names)-1)
+    contrast_baseline[param_names.index('TRS')] = 1
+    contrast_baseline[param_names.index('HC')] = -1
+    contrast_result_baseline = result.t_test(np.atleast_2d(contrast_baseline))
+    beta_contrast_baseline = contrast_result_baseline.effect.item()
+    pval_contrast_baseline = contrast_result_baseline.pvalue.item()
+    
+    # CONTRAST 2: Slope (TRS*time - HC*time)
+    contrast_slope = np.zeros(len(param_names)-1)
+    contrast_slope[param_names.index('t_DIT:TRS')] = 1
+    contrast_slope[param_names.index('t_DIT:HC')] = -1
+    contrast_result_slope = result.t_test(np.atleast_2d(contrast_slope))
+    beta_contrast_slope = contrast_result_slope.effect.item()
+    pval_contrast_slope = contrast_result_slope.pvalue.item()
+    
+    # Clean up voxel column
     df = df.drop(columns=['voxel_t'])
-
-    filevals = [beta_HC, pval_HC,
-                beta_TRS, pval_TRS,
-                beta_time, pval_time,
-                beta_timexHC, pval_timexHC,
-                beta_timexTRS, pval_timexTRS,
-                beta_APdose, pval_APdose,
-                beta_PANSSTP,pval_PANSSTP]
-
+    
+    # Combine all outputs
+    filevals = [
+        beta_HC, pval_HC,
+        beta_TRS, pval_TRS,
+        beta_time, pval_time,
+        beta_timexHC, pval_timexHC,
+        beta_timexTRS, pval_timexTRS,
+        beta_APdose, pval_APdose,
+        beta_PANSSTP, pval_PANSSTP,
+        beta_contrast_baseline, pval_contrast_baseline,
+        beta_contrast_slope, pval_contrast_slope
+    ]
+    
+    # Output path
     result_path = os.path.join(output, f"{seedname}", file_name)
-
+    
+    # Write results
     with open(os.path.join(result_path), 'w') as file:
-        # Write column headers
         file.write(
-            "beta_HC\tpval_HC\tbeta_TRS\tpval_TRS\tbeta_time\tpval_time\tbeta_timexHC\tpval_timexHC\tbeta_timexTRS\tpval_timexTRS\tbeta_APdose\tpval_APdose\tbeta_PANSSTP\tpval_PANSSTP\n")
-        # Write p-values in different columns
-        for val in filevals:
-            if val == filevals[-1]:
-                file.write(f"{val}")
-            else:
-                file.write(f"{val}\t")  # Write p-values
+            "beta_HC\tpval_HC\tbeta_TRS\tpval_TRS\tbeta_time\tpval_time\t"
+            "beta_timexHC\tpval_timexHC\tbeta_timexTRS\tpval_timexTRS\t"
+            "beta_APdose\tpval_APdose\tbeta_PANSSTP\tpval_PANSSTP\t"
+            "beta_TRSvsHC\tpval_TRSvsHC\tbeta_timexTRSvsHC\tpval_timexTRSvsHC\n"
+        )
+        file.write("\t".join(f"{val}" for val in filevals) + "\n")
+    
     print(f'Saved {result_path}')
+    
+    
+
 
 
 
