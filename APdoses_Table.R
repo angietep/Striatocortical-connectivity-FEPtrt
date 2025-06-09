@@ -137,6 +137,7 @@ df_plot <- med_counts %>%
                              levels = c("Clozapine", "Olanzapina", "Risperidona", 
                                         "Aripiprazol", "Others")))
 
+df_plot$group <- factor(df_plot$group, ordered = TRUE, levels = c("TR_afterClozapine","TR_beforeClozapine","NTR"))
 # Plot
 ggplot(df_plot, aes(x = group, y = percentage, fill = medication)) +
   geom_col(position = position_dodge(width = 0.7), width = 0.6) +
